@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CourseService, Course } from '../../../core/services/course-data.service';
 
@@ -10,7 +10,7 @@ import { CourseService, Course } from '../../../core/services/course-data.servic
   templateUrl: './course-details.html',
   styleUrl: './course-details.scss'
 })
-export class CourseDetails {
+export class CourseDetails implements OnInit {
   courseId = '1';
   course?: Course;
   outcomes: string[] = [];
@@ -19,8 +19,14 @@ export class CourseDetails {
   private courseService = inject(CourseService);
 
   constructor(private route: ActivatedRoute) {
-    this.courseId = this.route.snapshot.paramMap.get('id') || '1';
-    this.loadCourse();
+    // keep constructor minimal; initialization handled in ngOnInit
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.courseId = params.get('id') || '1';
+      this.loadCourse();
+    });
   }
 
   private loadCourse() {
