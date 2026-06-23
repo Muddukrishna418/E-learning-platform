@@ -1,0 +1,44 @@
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+
+  app-navbar {
+    flex-shrink: 0;
+  }
+
+  .dashboard-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+
+    app-sidebar {
+      flex-shrink: 0;
+    }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      background: #ffffff;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    .dashboard-body {
+      flex-direction: column;
+
+      app-sidebar {
+        max-height: 300px;
+        border-bottom: 1px solid #e0e6ed;
+      }
+
+      .main-content {
+        overflow-x: hidden;
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-brand">
+      <a routerLink="/home" class="logo">
+        <span class="logo-icon">📚</span>
+        <span class="logo-text">E-Learning</span>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="mobile-toggle"
+      [class.active]="mobileMenuOpen"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="navbar-menu" [class.active]="mobileMenuOpen">
+      <a
+        routerLink="/home"
+        routerLinkActive="active"
+        class="nav-link"
+        (click)="closeMobileMenu()"
+      >
+        Home
+      </a>
+      <a
+        routerLink="/courses"
+        routerLinkActive="active"
+        class="nav-link"
+        (click)="closeMobileMenu()"
+      >
+        Courses
+      </a>
+      <a href="#categories" class="nav-link" (click)="closeMobileMenu()">
+        Categories
+      </a>
+      <a href="#instructors" class="nav-link" (click)="closeMobileMenu()">
+        Instructors
+      </a>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="navbar-actions">
+      <!-- Search Bar -->
+      <div class="search-wrapper">
+        <input
+          type="search"
+          placeholder="Search courses..."
+          class="search-input"
+          aria-label="Search courses"
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <!-- Auth Links -->
+      <div class="auth-links" *ngIf="!isAuthenticated">
+        <a routerLink="/login" class="btn-login">Login</a>
+        <a routerLink="/signup" class="btn-signup">Sign Up</a>
+      </div>
+
+      <!-- User Menu -->
+      <div class="user-menu" *ngIf="isAuthenticated">
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -6,55 +6,127 @@ import { CourseDetails as StudentCourseDetailsComponent } from './features/stude
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
 import { CourseDetailsComponent } from './features/course-details/course-details';
+import { authGuard } from './core/guards/auth.guard';
+import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
+import { AuthLayout } from './layouts/auth-layout/auth-layout';
+import { MainLayout } from './layouts/main-layout/main-layout';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: Home
-  },
-
-  {
-    path: 'courses',
-    component: CoursesComponent
-  },
-
-  {
-    path: 'courses/:id',
-    component: StudentCourseDetailsComponent
-  },
-
-  {
-    path: 'student/courses',
-    component: CoursesComponent
-  },
-
-  {
-    path: 'student/courses/:id',
-    component: StudentCourseDetailsComponent
-  },
-
-  {
     path: 'login',
-    component: LoginComponent
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        component: LoginComponent
+      }
+    ]
   },
 
   {
     path: 'register',
-    component: RegisterComponent
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        component: RegisterComponent
+      }
+    ]
   },
 
   {
     path: 'signup',
-    component: RegisterComponent
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        component: RegisterComponent
+      }
+    ]
+  },
+
+  // Home page with navbar only (no sidebar)
+  {
+    path: 'home',
+    component: MainLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: Home
+      }
+    ]
+  },
+
+  // Courses page with navbar and sidebar
+  {
+    path: 'courses',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: CoursesComponent
+      }
+    ]
+  },
+
+  {
+    path: 'courses/:id',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: StudentCourseDetailsComponent
+      }
+    ]
+  },
+
+  {
+    path: 'student/courses',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: CoursesComponent
+      }
+    ]
+  },
+
+  {
+    path: 'student/courses/:id',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: StudentCourseDetailsComponent
+      }
+    ]
   },
 
   {
     path: 'course-details',
-    component: CourseDetailsComponent
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: CourseDetailsComponent
+      }
+    ]
+  },
+
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
   },
 
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'login'
   }
 ];

@@ -1,27 +1,13 @@
 <section class="courses-page">
-  <header class="navbar">
-    <a class="logo" routerLink="/">E-Learning Platform</a>
-
-    <nav aria-label="Main navigation">
-      <a routerLink="/courses">Courses</a>
-      <a routerLink="/#categories">Categories</a>
-      <a routerLink="/#instructors">Instructors</a>
-      <a routerLink="/#testimonials">Testimonials</a>
-    </nav>
-
-    <div class="actions">
-      <input type="search" placeholder="Search courses" aria-label="Search courses" />
-      <a routerLink="/login" class="login">Login</a>
-      <a routerLink="/signup" class="signup">Sign Up</a>
-    </div>
-  </header>
-
   <div class="courses-header">
     <div>
-      <span class="eyebrow">Explore learning</span>
-      <h2>All courses</h2>
+      <span class="eyebrow">📚 Explore learning</span>
+      <h2>{{ selectedCategory ? '🎯 ' + selectedCategory + ' Courses' : '✨ All courses' }}</h2>
+      <p *ngIf="selectedCategory" class="filter-info">
+        Showing {{ courses.length }} course{{ courses.length !== 1 ? 's' : '' }} in <strong>{{ selectedCategory }}</strong>
+        <a routerLink="/courses" class="clear-filter">✕ Clear filter</a>
+      </p>
     </div>
-    <a routerLink="/" class="back-link">Back to home</a>
   </div>
 
   <div class="courses-grid">

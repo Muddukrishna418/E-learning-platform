@@ -1,86 +1,48 @@
 .courses-page {
   min-height: 100vh;
-  padding: 0 1.5rem 2.5rem;
-  background:
-    radial-gradient(circle at top, rgba(99, 102, 241, 0.06), transparent 18%),
-    #f8f9fc;
-}
+  padding: 2rem 1.5rem;
+  background: radial-gradient(circle at top, rgba(99, 102, 241, 0.06), transparent 18%), #f8f9fc;
+  position: relative;
+  overflow: hidden;
 
-.navbar {
-  width: min(1606px, calc(100% - 48px));
-  min-height: 72px;
-  margin: 0 auto 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-}
+  &::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.08), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.06), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-.logo {
-  color: #111827;
-  font-size: 28px;
-  font-weight: bold;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-nav {
-  display: flex;
-  gap: 34px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #222;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.actions input {
-  width: 320px;
-  min-height: 56px;
-  padding: 0 22px;
-  border-radius: 999px;
-  border: 1px solid #dbe3f0;
-  background: white;
-  font-size: 20px;
-}
-
-.login,
-.signup {
-  min-height: 56px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
-  border-radius: 999px;
-  color: #111827;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.login {
-  background: white;
-  border: 1px solid #dbe3f0;
-}
-
-.signup {
-  background: #2563eb;
-  color: white;
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .courses-header {
-  width: min(1606px, calc(100% - 48px));
+  width: 100%;
   margin: 0 auto 1.75rem;
   display: flex;
   justify-content: space-between;
   align-items: end;
+  animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .eyebrow {
@@ -97,6 +59,67 @@ nav a {
   margin: 0;
   font-size: 2rem;
   color: #0f172a;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  transition: transform 0.3s ease;
+}
+
+.courses-header:hover h2 {
+  transform: scale(1.02);
+}
+
+.filter-info {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 249, 252, 0.4) 100%);
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+  strong {
+    color: #667eea;
+    font-weight: 700;
+  }
+
+  .clear-filter {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 700;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(102, 126, 234, 0.08);
+
+    &:hover {
+      color: #764ba2;
+      background: rgba(102, 126, 234, 0.15);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .back-link {
@@ -115,19 +138,64 @@ nav a {
 
 .course-card {
   display: block;
-  background: #fff;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 249, 252, 0.7) 100%);
   border-radius: 18px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-  border: 1px solid #eef2ff;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: visible;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+  &:nth-child(n+5) { animation-delay: 0.5s; }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+  }
+
+  &:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 30px 60px rgba(102, 126, 234, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-color: rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 252, 0.85) 100%);
+
+    &::before {
+      transform: scaleX(1);
+    }
+
+    .course-image::before {
+      opacity: 1;
+    }
+  }
 }
 
-.course-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 44px rgba(37, 99, 235, 0.14);
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .course-image {
@@ -138,6 +206,17 @@ nav a {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
+  }
 }
 
 .course-image::after {
@@ -157,13 +236,20 @@ nav a {
   align-items: center;
   justify-content: center;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(15px);
   color: #fff;
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+
+  .course-card:hover & {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
+  }
 }
 .image-1 {
   background: linear-gradient(135deg, #2563eb, #7c3aed);
@@ -183,22 +269,43 @@ nav a {
 
 .course-content {
   padding: 1rem 1rem 1.1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .course-tag {
   display: inline-block;
   font-size: 0.76rem;
-  color: #5b5bd6;
+  color: #667eea;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+
+  .course-card:hover & {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-color: rgba(102, 126, 234, 0.4);
+  }
 }
 
 .course-content h3 {
   margin: 0;
   font-size: 1.1rem;
   color: #0f172a;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+}
+
+.course-card:hover .course-content h3 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .course-content p {
@@ -216,10 +323,20 @@ nav a {
 }
 
 .course-meta span {
-  background: #f8fafc;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(248, 249, 252, 0.6) 100%);
   padding: 0.35rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #64748b;
+
+  .course-card:hover & {
+    border-color: rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(102, 126, 234, 0.05) 100%);
+  }
 }
 
 @media (max-width: 980px) {

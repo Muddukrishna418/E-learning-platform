@@ -1,21 +1,4 @@
 <section class="home-page">
-  <header class="navbar">
-    <a class="logo" routerLink="/">E-Learning Platform</a>
-
-    <nav aria-label="Main navigation">
-      <a routerLink="/courses">Courses</a>
-      <a href="#categories">Categories</a>
-      <a href="#instructors">Instructors</a>
-      <a href="#testimonials">Testimonials</a>
-    </nav>
-
-    <div class="actions">
-      <input type="search" placeholder="Search courses" aria-label="Search courses" />
-      <a routerLink="/login" class="login">Login</a>
-      <a routerLink="/signup" class="signup">Sign up</a>
-    </div>
-  </header>
-
   <main>
     <section class="hero">
       <div class="hero-left">
@@ -56,12 +39,10 @@
       <h2>Popular categories</h2>
 
       <div class="category-grid">
-        <a class="category-card" routerLink="/courses">Development</a>
-        <a class="category-card" routerLink="/courses">Design</a>
-        <a class="category-card" routerLink="/courses">Marketing</a>
-        <a class="category-card" routerLink="/courses">Business</a>
-        <a class="category-card" routerLink="/courses">Data Science</a>
-        <a class="category-card" routerLink="/courses">AI &amp; ML</a>
+        <button *ngFor="let category of categories" (click)="exploreCategory(category.name)" class="category-card">
+          <span class="category-name">{{ category.name }}</span>
+          <span class="category-count">{{ category.count }} courses</span>
+        </button>
       </div>
     </section>
 
