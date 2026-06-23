@@ -35,10 +35,13 @@
             >
               <a [routerLink]="['/courses', course.id]" class="course-link">
                 <div class="course-logo">{{ course.logo }}</div>
-                <div class="course-info">
-                  <h5 class="course-title">{{ course.title }}</h5>
-                  <span class="course-level" [class]="'level-' + course.level.toLowerCase()">
-                    {{ course.level }}
+                <div class="course-item"
+                >
+                  <a [routerLink]="['/courses', course.id]" class="course-link">
+                    <div class="course-logo">
+                      <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
+                      <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
+                    </div>
                   </span>
                 </div>
                 <div class="course-rating">{{ course.rating }}</div>
@@ -58,7 +61,10 @@
           [routerLink]="['/courses', course.id]"
           class="quick-course-link"
         >
-          <span class="course-badge">{{ course.logo }}</span>
+          <span class="course-badge">
+            <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
+            <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
+          </span>
           <span class="course-title">{{ course.title }}</span>
           <span class="course-duration">{{ course.duration }}</span>
         </a>

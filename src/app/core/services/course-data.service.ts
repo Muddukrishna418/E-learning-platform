@@ -8,6 +8,7 @@ export interface Course {
   level: string;
   category: string;
   logo: string;
+  logoUrl?: string;
   rating: string;
   outcomes?: string[];
   lessons?: string[];
@@ -26,6 +27,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'Development',
       logo: 'WEB',
+      logoUrl: 'assets/logos/1.svg',
       rating: '4.9 ★',
       outcomes: [
         'Build full-stack applications with Angular and Node.js',
@@ -42,6 +44,7 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Marketing',
       logo: 'SEO',
+      logoUrl: 'assets/logos/2.svg',
       rating: '4.9 ★'
     },
     {
@@ -52,6 +55,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'Data',
       logo: 'DATA',
+      logoUrl: 'assets/logos/3.svg',
       rating: '4.9 ★'
     },
     {
@@ -62,6 +66,7 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Design',
       logo: 'UX',
+      logoUrl: 'assets/logos/4.svg',
       rating: '4.9 ★'
     }
     ,
@@ -73,6 +78,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'AI',
       logo: 'AI',
+      logoUrl: 'assets/logos/5.svg',
       rating: '4.9 ★',
       outcomes: [
         'Understand core AI concepts',
@@ -89,6 +95,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'Machine Learning',
       logo: 'ML',
+      logoUrl: 'assets/logos/6.svg',
       rating: '4.9 ★',
       outcomes: [
         'Understand supervised and unsupervised learning techniques',
@@ -111,6 +118,7 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Machine Learning',
       logo: 'DL',
+      logoUrl: 'assets/logos/7.svg',
       rating: '4.9 ★',
       outcomes: [
         'Build and train neural networks',
@@ -133,6 +141,7 @@ export class CourseService {
       level: 'Intermediate',
       category: 'AI',
       logo: 'NLP',
+      logoUrl: 'assets/logos/8.svg',
       rating: '4.9 ★',
       outcomes: [
         'Understand transformer architectures',
@@ -155,6 +164,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'AI',
       logo: 'CV',
+      logoUrl: 'assets/logos/9.svg',
       rating: '4.9 ★',
       outcomes: [
         'Apply image preprocessing and augmentation',
@@ -177,6 +187,7 @@ export class CourseService {
       level: 'Advanced',
       category: 'AI',
       logo: 'RL',
+      logoUrl: 'assets/logos/10.svg',
       rating: '4.9 ★',
       outcomes: [
         'Understand RL problem framing and MDPs',

@@ -17,7 +17,10 @@
       [routerLink]="['/courses', course.id]"
     >
       <div class="course-image" [ngClass]="'image-' + course.id">
-        <div class="course-logo">{{ course.logo }}</div>
+        <div class="course-logo">
+          <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
+          <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
+        </div>
       </div>
       <div class="course-content">
         <span class="course-tag">{{ course.category }}</span>

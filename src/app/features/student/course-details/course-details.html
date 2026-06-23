@@ -31,7 +31,10 @@
             </div>
           </div>
           <div class="course-image" [ngClass]="'image-' + courseId">
-            <div class="course-logo">{{ course.logo }}</div>
+            <div class="course-logo">
+              <img *ngIf="course?.logoUrl" [src]="course?.logoUrl" [alt]="course?.title + ' logo'" />
+              <ng-container *ngIf="!course?.logoUrl">{{ course?.logo }}</ng-container>
+            </div>
           </div>
         </div>
 
