@@ -1,0 +1,47 @@
+<section class="login-page">
+  <div class="login-panel">
+    <div class="brand-block">
+      <span class="brand-badge"></span>
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue your learning journey</p>
+    </div>
+
+    <form class="login-card" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+      <div class="field-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          required
+          email
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Enter your password"
+        />
+      </div>
+
+      <p class="helper-text">Demo login: {{ mockEmail }} / {{ mockPassword }}</p>
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+
+      <button type="submit">Login</button>
+
+      <div class="login-links">
+        <a routerLink="/signup">Create account</a>
+        <a routerLink="/forgot-password">Forgot password?</a>
+      </div>
+    </form>
+  </div>
+</section>

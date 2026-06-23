@@ -1,0 +1,111 @@
+<section class="home-page">
+  <header class="navbar">
+    <a class="logo" routerLink="/">E-Learning Platform</a>
+
+    <nav aria-label="Main navigation">
+      <a routerLink="/courses">Courses</a>
+      <a href="#categories">Categories</a>
+      <a href="#instructors">Instructors</a>
+      <a href="#testimonials">Testimonials</a>
+    </nav>
+
+    <div class="actions">
+      <input type="search" placeholder="Search courses" aria-label="Search courses" />
+      <a routerLink="/login" class="login">Login</a>
+      <a routerLink="/signup" class="signup">Sign up</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <p class="tag">ONLINE LEARNING</p>
+
+        <h1>Master skills for the future</h1>
+
+        <p class="desc">
+          Discover thousands of courses, learn from experts, and grow your
+          career at your own pace.
+        </p>
+
+        <div class="buttons">
+          <a routerLink="/courses" class="primary">Browse courses</a>
+          <a href="#categories" class="secondary">Explore categories</a>
+        </div>
+
+        <div class="stats">
+          <div><strong>10k+</strong><span>Students</span></div>
+          <div><strong>500+</strong><span>Courses</span></div>
+          <div><strong>95%</strong><span>Success rate</span></div>
+        </div>
+      </div>
+
+      <a class="hero-card" routerLink="/courses/4">
+        <span class="badge">Popular this week</span>
+        <h2>UI/UX Design Masterclass</h2>
+        <p>Build modern interfaces and improve user experience.</p>
+
+        <div class="card-footer">
+          <span>8 weeks</span>
+          <span>4.9 &#9733;</span>
+        </div>
+      </a>
+    </section>
+
+    <section class="categories" id="categories">
+      <h2>Popular categories</h2>
+
+      <div class="category-grid">
+        <a class="category-card" routerLink="/courses">Development</a>
+        <a class="category-card" routerLink="/courses">Design</a>
+        <a class="category-card" routerLink="/courses">Marketing</a>
+        <a class="category-card" routerLink="/courses">Business</a>
+        <a class="category-card" routerLink="/courses">Data Science</a>
+        <a class="category-card" routerLink="/courses">AI &amp; ML</a>
+      </div>
+    </section>
+
+    <section class="featured" id="courses">
+      <div class="title-row">
+        <h2>Featured courses</h2>
+        <a routerLink="/courses">View all</a>
+      </div>
+
+      <div class="course-grid">
+        <a class="course-card" routerLink="/courses/1">
+          <div class="thumb blue"></div>
+          <h3>Full-Stack Web Development</h3>
+          <p>Learn modern web technologies from scratch.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/2">
+          <div class="thumb red"></div>
+          <h3>Digital Marketing Strategy</h3>
+          <p>Master SEO, content, and campaign planning.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/3">
+          <div class="thumb green"></div>
+          <h3>Data Analytics Basics</h3>
+          <p>Understand dashboards, metrics, and insights.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="instructors" id="instructors">
+      <h2>Meet our instructors</h2>
+      <div class="instructor-grid">
+        <div class="instructor-card">Sarah Lee<span>Product Design</span></div>
+        <div class="instructor-card">David Kim<span>Software Engineering</span></div>
+        <div class="instructor-card">Mia Patel<span>Marketing</span></div>
+      </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+      <h2>What learners say</h2>
+      <blockquote>
+        The courses are practical, engaging, and helped me grow my career in just a few months.
+      </blockquote>
+    </section>
+  </main>
+</section>

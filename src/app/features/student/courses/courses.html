@@ -1,0 +1,49 @@
+<section class="courses-page">
+  <header class="navbar">
+    <a class="logo" routerLink="/">E-Learning Platform</a>
+
+    <nav aria-label="Main navigation">
+      <a routerLink="/courses">Courses</a>
+      <a routerLink="/#categories">Categories</a>
+      <a routerLink="/#instructors">Instructors</a>
+      <a routerLink="/#testimonials">Testimonials</a>
+    </nav>
+
+    <div class="actions">
+      <input type="search" placeholder="Search courses" aria-label="Search courses" />
+      <a routerLink="/login" class="login">Login</a>
+      <a routerLink="/signup" class="signup">Sign Up</a>
+    </div>
+  </header>
+
+  <div class="courses-header">
+    <div>
+      <span class="eyebrow">Explore learning</span>
+      <h2>All courses</h2>
+    </div>
+    <a routerLink="/" class="back-link">Back to home</a>
+  </div>
+
+  <div class="courses-grid">
+    <a
+      *ngFor="let course of courses"
+      class="course-card"
+      [routerLink]="['/courses', course.id]"
+    >
+      <div class="course-image" [ngClass]="'image-' + course.id">
+        <div class="course-logo">{{ course.logo }}</div>
+      </div>
+      <div class="course-content">
+        <span class="course-tag">{{ course.category }}</span>
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.description }}</p>
+        <div class="course-meta">
+          <span>{{ course.duration }}</span>
+          <span>{{ course.level }}</span>
+          <span>{{ course.rating }}</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+

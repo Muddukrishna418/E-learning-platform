@@ -1,0 +1,53 @@
+> Building...
+√ Building...
+Initial chunk files | Names         |  Raw size
+main.js             | main          | 118.43 kB | 
+styles.css          | styles        |   8.85 kB | 
+
+                    | Initial total | 127.28 kB
+
+Application bundle generation complete. [3.160 seconds] - 2026-06-19T13:00:12.635Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4200[22m/[39m
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 118.42 kB | 
+
+Application bundle generation complete. [1.973 seconds] - 2026-06-19T13:09:21.023Z
+
+Component update sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 118.42 kB | 
+
+Application bundle generation complete. [0.399 seconds] - 2026-06-19T13:09:21.435Z
+
+Component update sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 118.42 kB | 
+
+Application bundle generation complete. [0.363 seconds] - 2026-06-19T13:09:24.320Z
+
+Component update sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+
+No output file changes.
+
+Application bundle generation complete. [0.402 seconds] - 2026-06-19T13:09:28.019Z
+
+Component update sent to client(s).
+> Changes detected. Rebuilding...
+√ Changes detected. Rebuilding...
+Initial chunk files | Names |  Raw size
+main.js             | main  | 118.42 kB | 
+
+Application bundle generation complete. [0.809 seconds] - 2026-06-19T13:12:18.872Z
+
+Component update sent to client(s).

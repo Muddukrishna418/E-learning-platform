@@ -1,0 +1,60 @@
+<section class="course-details-page">
+  <header class="navbar">
+    <a class="logo" routerLink="/">E-Learning Platform</a>
+
+    <nav aria-label="Main navigation">
+      <a routerLink="/courses">Courses</a>
+      <a routerLink="/#categories">Categories</a>
+      <a routerLink="/#instructors">Instructors</a>
+      <a routerLink="/#testimonials">Testimonials</a>
+    </nav>
+
+    <div class="actions">
+      <input type="search" placeholder="Search courses" aria-label="Search courses" />
+      <a routerLink="/login" class="login">Login</a>
+      <a routerLink="/signup" class="signup">Sign Up</a>
+    </div>
+  </header>
+
+  <a routerLink="/courses" class="back-link">Back to courses</a>
+
+  <div class="course-details-card">
+    <div class="course-hero">
+      <div class="course-hero-text">
+        <span class="course-tag">{{ course.category }}</span>
+        <h2>{{ course.title }}</h2>
+        <p class="course-description">{{ course.description }}</p>
+        <div class="course-meta">
+          <span>{{ course.duration }}</span>
+          <span>{{ course.level }}</span>
+          <span>{{ course.rating }}</span>
+        </div>
+      </div>
+
+      <div class="course-image">
+        <div class="course-logo">{{ course.logo }}</div>
+      </div>
+    </div>
+
+    <div class="course-info-grid">
+      <div class="info-panel">
+        <h3>What you'll learn</h3>
+        <ul>
+          <li *ngFor="let outcome of course.outcomes">{{ outcome }}</li>
+        </ul>
+      </div>
+
+      <div class="info-panel">
+        <h3>Course outline</h3>
+        <ol>
+          <li *ngFor="let lesson of course.lessons">{{ lesson }}</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="course-footer-row">
+      <p class="course-id">Course ID: UIUX-101</p>
+      <button class="enroll-btn">Enroll now</button>
+    </div>
+  </div>
+</section>
