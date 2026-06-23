@@ -8,7 +8,7 @@ export class Auth {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.getAuthState());
   public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
-  private mockEmail = 'student@example.com';
+  private mockEmail = 'test@example.com';
   private mockPassword = 'password123';
 
   constructor() {}

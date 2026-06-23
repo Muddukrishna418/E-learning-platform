@@ -34,9 +34,8 @@ export class Login {
     // Validate credentials using Auth service
     if (this.authService.login(this.email, this.password)) {
       this.successMessage = 'Login successful! Redirecting to home...';
-      setTimeout(() => {
-        this.router.navigate(['/home']);
-      }, 500);
+      // Navigate immediately to the root which redirects to the home route
+      this.router.navigate(['/']);
     } else {
       this.errorMessage = 'Invalid email or password. Please try again.';
     }
