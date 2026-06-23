@@ -89,7 +89,19 @@ export class CourseService {
       level: 'Beginner',
       category: 'Machine Learning',
       logo: 'ML',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Understand supervised and unsupervised learning techniques',
+        'Train and evaluate simple ML models',
+        'Apply basic feature engineering and model selection'
+      ],
+      lessons: [
+        'Introduction to machine learning',
+        'Regression and classification',
+        'Model evaluation and validation',
+        'Unsupervised learning basics',
+        'Feature engineering and pipelines'
+      ]
     },
     {
       id: '7',
@@ -99,7 +111,19 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Machine Learning',
       logo: 'DL',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Build and train neural networks',
+        'Understand optimization and regularization',
+        'Work with frameworks like TensorFlow or PyTorch'
+      ],
+      lessons: [
+        'Neural network basics',
+        'Backpropagation and optimization',
+        'CNNs and RNNs overview',
+        'Transfer learning and fine-tuning',
+        'Model debugging and deployment'
+      ]
     },
     {
       id: '8',
@@ -109,7 +133,19 @@ export class CourseService {
       level: 'Intermediate',
       category: 'AI',
       logo: 'NLP',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Understand transformer architectures',
+        'Fine-tune pre-trained language models',
+        'Build NLP pipelines for common tasks'
+      ],
+      lessons: [
+        'Text preprocessing and tokenization',
+        'Attention mechanisms and transformers',
+        'Fine-tuning BERT/GPT-style models',
+        'Sequence generation and summarization',
+        'Evaluation and deployment'
+      ]
     },
     {
       id: '9',
@@ -119,7 +155,19 @@ export class CourseService {
       level: 'Beginner',
       category: 'AI',
       logo: 'CV',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Apply image preprocessing and augmentation',
+        'Train convolutional networks for vision tasks',
+        'Implement basic detection and segmentation pipelines'
+      ],
+      lessons: [
+        'Image fundamentals and preprocessing',
+        'Convolutional neural networks',
+        'Data augmentation and regularization',
+        'Object detection basics',
+        'Deploying vision models'
+      ]
     },
     {
       id: '10',
@@ -129,7 +177,19 @@ export class CourseService {
       level: 'Advanced',
       category: 'AI',
       logo: 'RL',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Understand RL problem framing and MDPs',
+        'Implement value and policy-based algorithms',
+        'Evaluate and tune RL agents'
+      ],
+      lessons: [
+        'RL fundamentals and MDPs',
+        'Value-based methods (Q-learning)',
+        'Policy gradients and actor-critic',
+        'Introduction to deep RL',
+        'Benchmarking and environment design'
+      ]
     }
   ];
 
