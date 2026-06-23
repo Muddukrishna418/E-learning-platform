@@ -58,6 +58,49 @@ export class CourseService {
     }
   ];
 
+  constructor() {
+    // Ensure there are at least 50 additional auto-generated courses
+    this.generateAdditionalCourses(50);
+  }
+
+  private generateAdditionalCourses(count: number) {
+    const categories = [
+      'Development',
+      'Marketing',
+      'Data',
+      'Design',
+      'Business',
+      'IT',
+      'Personal Development',
+      'Photography',
+      'Music',
+      'Language'
+    ];
+    const logos = ['WEB', 'SEO', 'DATA', 'UX', 'BUS', 'IT', 'PD', 'PHOTO', 'MUS', 'LANG'];
+    const levels = ['Beginner', 'Intermediate', 'Advanced'];
+
+    let nextId = this.courses.length + 1;
+    for (let i = 0; i < count; i++) {
+      const id = (nextId++).toString();
+      const cat = categories[i % categories.length];
+      const logo = logos[i % logos.length];
+      const level = levels[i % levels.length];
+      const durationWeeks = 4 + (i % 9); // 4-12 weeks
+      const rating = (4.5 + (i % 6) * 0.1).toFixed(1);
+
+      this.courses.push({
+        id,
+        title: `${cat} Course ${id}`,
+        description: `Auto-generated ${cat} course #${id} covering core concepts and practical exercises.`,
+        duration: `${durationWeeks} weeks`,
+        level,
+        category: cat,
+        logo,
+        rating: `${rating} ★`
+      });
+    }
+  }
+
   getCourses(): Course[] {
     return this.courses;
   }
