@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CourseService, Course } from '../../../core/services/course-data.service';
+import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CourseLogo],
   templateUrl: './course-details.html',
   styleUrl: './course-details.scss'
 })
@@ -17,6 +18,24 @@ export class CourseDetails implements OnInit {
   lessons: string[] = [];
 
   private courseService = inject(CourseService);
+
+  getEmojiForCategory(category?: string) {
+    const map: { [k: string]: string } = {
+      Development: '🧑‍💻',
+      Marketing: '📈',
+      Data: '📊',
+      Design: '🎨',
+      AI: '🤖',
+      'Machine Learning': '🧠',
+      Photography: '📷',
+      'Personal Development': '🌱',
+      Business: '💼',
+      Cloud: '☁️',
+      Cybersecurity: '🔒',
+      IT: '🖥️'
+    };
+    return category ? map[category] ?? '📚' : '📚';
+  }
 
   constructor(private route: ActivatedRoute) {
     // keep constructor minimal; initialization handled in ngOnInit

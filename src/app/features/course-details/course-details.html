@@ -32,7 +32,9 @@
       </div>
 
       <div class="course-image">
-        <div class="course-logo">{{ course.logo }}</div>
+        <div class="course-logo">
+          <app-course-logo [title]="course.title" [emoji]="'🎨'"></app-course-logo>
+        </div>
       </div>
     </div>
 

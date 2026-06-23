@@ -18,8 +18,7 @@
     >
       <div class="course-image" [ngClass]="'image-' + course.id">
         <div class="course-logo">
-          <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
-          <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
+          <app-course-logo [title]="course.title" [emoji]="getEmojiForCategory(course.category)"></app-course-logo>
         </div>
       </div>
       <div class="course-content">

@@ -29,23 +29,23 @@
             class="category-courses"
             *ngIf="selectedCategory === category"
           >
-            <div
-              *ngFor="let course of getCoursesByCategory(category)"
-              class="course-item"
-            >
-              <a [routerLink]="['/courses', course.id]" class="course-link">
-                <div class="course-logo">{{ course.logo }}</div>
-                <div class="course-item"
-                >
-                  <a [routerLink]="['/courses', course.id]" class="course-link">
-                    <div class="course-logo">
-                      <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
-                      <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
-                    </div>
-                  </span>
+            <div *ngFor="let course of getCoursesByCategory(category)" class="course-item">
+              <button type="button" class="course-link" (click)="openPreview(course)">
+                <div class="course-logo">
+                  <app-course-logo [title]="course.title" [emoji]="getEmojiForCategory(course.category)"></app-course-logo>
                 </div>
+
+                <div class="course-info">
+                  <h5 class="course-title">{{ course.title }}</h5>
+                  <p class="course-desc">{{ course.description }}</p>
+                  <div class="course-meta">
+                    <span class="course-level" [class]="'level-' + course.level.toLowerCase()">{{ course.level }}</span>
+                    <span class="course-duration">{{ course.duration }}</span>
+                  </div>
+                </div>
+
                 <div class="course-rating">{{ course.rating }}</div>
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -53,21 +53,18 @@
     </div>
 
     <!-- All Courses Section -->
-    <div class="all-courses-section">
+      <div class="all-courses-section">
       <h4 class="section-title">All Courses</h4>
       <div class="all-courses-list">
-        <a
-          *ngFor="let course of courses"
-          [routerLink]="['/courses', course.id]"
-          class="quick-course-link"
-        >
+        <button *ngFor="let course of courses" type="button" class="quick-course-link" (click)="openPreview(course)">
           <span class="course-badge">
-            <img *ngIf="course.logoUrl" [src]="course.logoUrl" [alt]="course.title + ' logo'" />
-            <ng-container *ngIf="!course.logoUrl">{{ course.logo }}</ng-container>
+            <app-course-logo [title]="course.title" [emoji]="getEmojiForCategory(course.category)"></app-course-logo>
           </span>
-          <span class="course-title">{{ course.title }}</span>
-          <span class="course-duration">{{ course.duration }}</span>
-        </a>
+          <div class="quick-course-info">
+            <span class="course-title">{{ course.title }}</span>
+            <span class="quick-course-sub">{{ course.duration }} • {{ course.rating }}</span>
+          </div>
+        </button>
       </div>
     </div>
   </div>
@@ -76,5 +73,23 @@
   <div class="sidebar-footer">
     <p class="total-courses">Total: {{ courses.length }} courses</p>
     <a routerLink="/courses" class="view-all-btn">View All Courses</a>
+  </div>
+  <div class="preview-panel" *ngIf="previewCourse" role="button" tabindex="0" (click)="navigateToCourse(previewCourse)" (keydown.enter)="navigateToCourse(previewCourse)">
+    <div class="preview-header">
+      <div class="preview-logo">
+        <app-course-logo [title]="previewCourse.title" [emoji]="getEmojiForCategory(previewCourse.category)"></app-course-logo>
+      </div>
+      <div class="preview-meta">
+        <h4 class="preview-title">{{ previewCourse.title }}</h4>
+        <div class="preview-sub">{{ previewCourse.duration }} • {{ previewCourse.level }} • {{ previewCourse.rating }}</div>
+      </div>
+      <button type="button" class="preview-close" (click)="closePreview(); $event.stopPropagation()">✕</button>
+    </div>
+    <p class="preview-desc">{{ previewCourse.description }}</p>
+    <div class="preview-actions">
+      <a [routerLink]="['/courses', previewCourse.id]" class="btn btn-primary" (click)="$event.stopPropagation()">View Details</a>
+      <a [routerLink]="['/courses', previewCourse.id]" [queryParams]="{ enroll: true }" class="btn btn-enroll" (click)="$event.stopPropagation()">Enroll Now</a>
+      <button type="button" class="btn" (click)="closePreview(); $event.stopPropagation()">Close</button>
+    </div>
   </div>
 </div>

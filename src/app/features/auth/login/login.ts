@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
+import { CourseService } from '../../../core/services/course-data.service';
 
 @Component({
   selector: 'app-login',
@@ -16,11 +17,18 @@ export class Login {
   password = '';
   errorMessage = '';
   successMessage = '';
+  totalCourses = 0;
+  categoriesCount = 0;
 
   constructor(
     private router: Router,
     private authService: Auth
-  ) {}
+    , private courseService: CourseService
+  ) {
+    const courses = this.courseService.getCourses();
+    this.totalCourses = courses.length;
+    this.categoriesCount = new Set(courses.map(c => c.category)).size;
+  }
 
   onSubmit(form: NgForm): void {
     this.errorMessage = '';
@@ -34,8 +42,8 @@ export class Login {
     // Validate credentials using Auth service
     if (this.authService.login(this.email, this.password)) {
       this.successMessage = 'Login successful! Redirecting to home...';
-      // Navigate immediately to the root which redirects to the home route
-      this.router.navigate(['/']);
+      // Navigate to the home route after successful login
+      this.router.navigate(['/home']);
     } else {
       this.errorMessage = 'Invalid email or password. Please try again.';
     }

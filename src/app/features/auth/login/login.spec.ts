@@ -40,6 +40,6 @@ describe('Login', () => {
       invalid: false,
     } as any);
 
-    expect(navigateCalledWith).toEqual(['/']);
+    expect(navigateCalledWith).toEqual(['/home']);
   });
 });
