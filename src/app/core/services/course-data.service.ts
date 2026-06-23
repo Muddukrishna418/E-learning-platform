@@ -9,6 +9,8 @@ export interface Course {
   category: string;
   logo: string;
   rating: string;
+  outcomes?: string[];
+  lessons?: string[];
 }
 
 @Injectable({
@@ -24,7 +26,13 @@ export class CourseService {
       level: 'Beginner',
       category: 'Development',
       logo: 'WEB',
-      rating: '4.9 ★'
+      rating: '4.9 ★',
+      outcomes: [
+        'Build full-stack applications with Angular and Node.js',
+        'Connect frontends to REST APIs',
+        'Deploy apps to cloud platforms'
+      ],
+      lessons: ['Frontend fundamentals', 'Backend basics', 'APIs and integration', 'Testing and deployment']
     },
     {
       id: '2',
@@ -34,7 +42,7 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Marketing',
       logo: 'SEO',
-      rating: '4.8 ★'
+      rating: '4.9 ★'
     },
     {
       id: '3',
@@ -44,7 +52,7 @@ export class CourseService {
       level: 'Beginner',
       category: 'Data',
       logo: 'DATA',
-      rating: '4.7 ★'
+      rating: '4.9 ★'
     },
     {
       id: '4',
@@ -54,6 +62,73 @@ export class CourseService {
       level: 'Intermediate',
       category: 'Design',
       logo: 'UX',
+      rating: '4.9 ★'
+    }
+    ,
+    {
+      id: '5',
+      title: 'Introduction to Artificial Intelligence',
+      description: 'Foundations of AI: agents, search, reasoning, and ethics.',
+      duration: '6 weeks',
+      level: 'Beginner',
+      category: 'AI',
+      logo: 'AI',
+      rating: '4.9 ★',
+      outcomes: [
+        'Understand core AI concepts',
+        'Implement simple search and reasoning agents',
+        'Discuss AI ethics and impacts'
+      ],
+      lessons: ['AI overview', 'Search & planning', 'Knowledge representation', 'Ethics in AI']
+    },
+    {
+      id: '6',
+      title: 'Machine Learning Basics',
+      description: 'Supervised and unsupervised learning fundamentals.',
+      duration: '7 weeks',
+      level: 'Beginner',
+      category: 'Machine Learning',
+      logo: 'ML',
+      rating: '4.9 ★'
+    },
+    {
+      id: '7',
+      title: 'Deep Learning Fundamentals',
+      description: 'Neural networks, training, and model evaluation.',
+      duration: '8 weeks',
+      level: 'Intermediate',
+      category: 'Machine Learning',
+      logo: 'DL',
+      rating: '4.9 ★'
+    },
+    {
+      id: '8',
+      title: 'NLP with Transformers',
+      description: 'Modern natural language processing using transformer models.',
+      duration: '6 weeks',
+      level: 'Intermediate',
+      category: 'AI',
+      logo: 'NLP',
+      rating: '4.9 ★'
+    },
+    {
+      id: '9',
+      title: 'Computer Vision Essentials',
+      description: 'Image processing and core CV techniques.',
+      duration: '6 weeks',
+      level: 'Beginner',
+      category: 'AI',
+      logo: 'CV',
+      rating: '4.9 ★'
+    },
+    {
+      id: '10',
+      title: 'Reinforcement Learning Intro',
+      description: 'Learn agents, environments, and reward-driven training.',
+      duration: '6 weeks',
+      level: 'Advanced',
+      category: 'AI',
+      logo: 'RL',
       rating: '4.9 ★'
     }
   ];
@@ -73,10 +148,12 @@ export class CourseService {
       'IT',
       'Personal Development',
       'Photography',
-      'Music',
-      'Language'
+      'AI',
+      'Machine Learning',
+      'Cloud',
+      'Cybersecurity'
     ];
-    const logos = ['WEB', 'SEO', 'DATA', 'UX', 'BUS', 'IT', 'PD', 'PHOTO', 'MUS', 'LANG'];
+    const logos = ['WEB', 'SEO', 'DATA', 'UX', 'BUS', 'IT', 'PD', 'PHOTO', 'AI', 'ML', 'CLOUD', 'SEC'];
     const levels = ['Beginner', 'Intermediate', 'Advanced'];
 
     let nextId = this.courses.length + 1;
@@ -86,7 +163,8 @@ export class CourseService {
       const logo = logos[i % logos.length];
       const level = levels[i % levels.length];
       const durationWeeks = 4 + (i % 9); // 4-12 weeks
-      const rating = (4.5 + (i % 6) * 0.1).toFixed(1);
+      // Use demo rating to match Full-Stack Web Development for a consistent showcase
+      const rating = '4.9 ★';
 
       this.courses.push({
         id,
@@ -96,7 +174,7 @@ export class CourseService {
         level,
         category: cat,
         logo,
-        rating: `${rating} ★`
+        rating
       });
     }
   }
