@@ -34,6 +34,7 @@ export class Auth {
   logout(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('userName');
     }
     this.isAuthenticatedSubject.next(false);
   }

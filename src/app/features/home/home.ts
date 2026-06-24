@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CourseService } from '../../core/services/course-data.service';
+import { Auth } from '../../core/services/auth';
+import { CourseLogo } from '../../shared/components/course-logo/course-logo';
 
 interface CategorySummary {
   name: string;
@@ -10,7 +12,7 @@ interface CategorySummary {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CourseLogo],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
@@ -18,8 +20,22 @@ export class Home implements OnInit {
   categories: CategorySummary[] = [];
   private courseService = inject(CourseService);
   private router = inject(Router);
+  private auth = inject(Auth);
+
+  isLoggedIn = false;
+  userName: string | null = null;
 
   ngOnInit(): void {
+    // react to auth state and load display name
+    this.auth.isAuthenticated$.subscribe(v => {
+      this.isLoggedIn = !!v;
+      try {
+        this.userName = this.isLoggedIn && typeof localStorage !== 'undefined' ? localStorage.getItem('userName') : null;
+      } catch (e) {
+        this.userName = null;
+      }
+    });
+
     const courses = this.courseService.getCourses();
     const categoryMap = new Map<string, number>();
     
@@ -33,5 +49,23 @@ export class Home implements OnInit {
 
   exploreCategory(categoryName: string): void {
     this.router.navigate(['/courses'], { queryParams: { category: categoryName } });
+  }
+
+  getEmojiForCategory(category?: string) {
+    const map: { [k: string]: string } = {
+      Development: '🧑‍💻',
+      Marketing: '📈',
+      Data: '📊',
+      Design: '🎨',
+      AI: '🤖',
+      'Machine Learning': '🧠',
+      Photography: '📷',
+      'Personal Development': '🌱',
+      Business: '💼',
+      Cloud: '☁️',
+      Cybersecurity: '🔒',
+      IT: '🖥️'
+    };
+    return category ? map[category] ?? '📚' : '📚';
   }
 }
