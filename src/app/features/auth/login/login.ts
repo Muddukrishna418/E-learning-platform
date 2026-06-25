@@ -39,24 +39,14 @@ export class Login {
       return;
     }
 
-    // Validate credentials using Auth service
-    if (this.authService.login(this.email, this.password)) {
-      this.successMessage = 'Login successful! Redirecting to home...';
-      // store a simple display name for the user (derived from email)
-      try {
-        const namePart = this.email.split('@')[0] || 'Student';
-        const displayName = namePart.split(/[._-]/).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('userName', displayName);
-        }
-      } catch (e) {
-        // ignore storage errors
+    this.authService.login(this.email, this.password).subscribe((success) => {
+      if (success) {
+        this.successMessage = 'Login successful! Redirecting to home...';
+        this.router.navigate(['/home']);
+      } else {
+        this.errorMessage = 'Invalid email or password. Please try again.';
       }
-      // Navigate to the home route after successful login
-      this.router.navigate(['/home']);
-    } else {
-      this.errorMessage = 'Invalid email or password. Please try again.';
-    }
+    });
   }
 }
 

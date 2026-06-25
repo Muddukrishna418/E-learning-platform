@@ -1,0 +1,344 @@
+{
+  "info": {
+    "name": "E-Learning Platform API",
+    "description": "Postman collection for auth, courses, enrollments, and reviews. Variables are auto-populated from responses.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "apiPath",
+      "value": "/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "courseId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "student@example.com",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "fullName",
+      "value": "Test Student",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"{{fullName}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"role\": \"STUDENT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "  pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "}",
+                  "if (jsonData.userId) {",
+                  "  pm.collectionVariables.set(\"userId\", jsonData.userId.toString());",
+                  "}",
+                  "if (jsonData.fullName) {",
+                  "  pm.collectionVariables.set(\"fullName\", jsonData.fullName);",
+                  "}",
+                  "if (jsonData.email) {",
+                  "  pm.collectionVariables.set(\"email\", jsonData.email);",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "  pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "}",
+                  "if (jsonData.userId) {",
+                  "  pm.collectionVariables.set(\"userId\", jsonData.userId.toString());",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Get Public Courses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/courses/public",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses", "public"]
+            }
+          }
+        },
+        {
+          "name": "Search Courses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/courses/search?keyword=java",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses", "search"],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "java"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Spring Boot Masterclass\",\n  \"description\": \"A course for backend developers\",\n  \"thumbnailUrl\": \"https://example.com/thumb.jpg\",\n  \"duration\": \"4 hours\",\n  \"level\": \"Beginner\",\n  \"price\": 49.99,\n  \"published\": true,\n  \"featured\": true,\n  \"categoryId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/courses?instructorId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses"],
+              "query": [
+                {
+                  "key": "instructorId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.collectionVariables.set(\"courseId\", jsonData.id.toString());",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Course by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/courses/public/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses", "public", "{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Instructor Courses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/courses/instructor/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses", "instructor", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enrollments",
+      "item": [
+        {
+          "name": "Enroll Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/enrollments?studentId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "enrollments"],
+              "query": [
+                {
+                  "key": "studentId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Student Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/enrollments/student/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "enrollments", "student", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent course!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/reviews/course/{{courseId}}?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reviews", "course", "{{courseId}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Course Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}{{apiPath}}/reviews/course/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reviews", "course", "{{courseId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

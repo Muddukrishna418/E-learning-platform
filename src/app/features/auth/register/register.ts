@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-register',
@@ -19,6 +20,8 @@ export class Register {
   errorMessage = '';
   successMessage = '';
 
+  constructor(private authService: Auth, private router: Router) {}
+
   onSubmit(form: NgForm): void {
     this.errorMessage = '';
     this.successMessage = '';
@@ -28,7 +31,14 @@ export class Register {
       return;
     }
 
-    this.successMessage = 'Signup page is connected successfully.';
+    this.authService.register(this.name, this.email, this.password).subscribe((success) => {
+      if (success) {
+        this.successMessage = 'Registration successful! Redirecting to home...';
+        this.router.navigate(['/home']);
+      } else {
+        this.errorMessage = 'Registration failed. Please try again.';
+      }
+    });
   }
 }
 
