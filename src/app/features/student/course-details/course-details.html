@@ -55,8 +55,27 @@
 
         <div class="course-footer-row">
           <p class="course-id">Course ID: {{ courseId }}</p>
-          <button class="enroll-btn">Enroll now</button>
+          <a class="enroll-btn" [routerLink]="['/enroll', course.id]">Enroll now</a>
         </div>
+
+        <section class="content-section" *ngIf="content.length || loadingContent">
+          <h3>Course content</h3>
+          <p *ngIf="loadingContent">Loading your learning materials...</p>
+          <div *ngIf="!loadingContent && content.length === 0" class="content-empty">
+            Enroll to unlock videos and images for this course.
+          </div>
+          <div class="content-list" *ngIf="content.length > 0">
+            <article class="content-card" *ngFor="let item of content">
+              <div class="content-head">
+                <span class="content-badge">{{ item.type }}</span>
+                <h4>{{ item.title }}</h4>
+              </div>
+              <p>{{ item.description }}</p>
+              <video *ngIf="item.type === 'VIDEO'" controls [src]="item.url" class="content-media"></video>
+              <img *ngIf="item.type === 'IMAGE'" [src]="item.url" [alt]="item.title" class="content-media" />
+            </article>
+          </div>
+        </section>
       </div>
     </ng-container>
 

@@ -1,0 +1,31 @@
+<section class="enroll-page">
+  <div class="enroll-card">
+    <a class="back-link" routerLink="/courses">← Back to courses</a>
+
+    <h2>Enroll in your course</h2>
+    <p class="subtitle">Secure your place and start learning right away.</p>
+
+    <div *ngIf="course; else noCourse" class="course-summary">
+      <div class="summary-header">
+        <span class="course-tag">{{ course.category }}</span>
+        <h3>{{ course.title }}</h3>
+      </div>
+      <p>{{ course.description }}</p>
+      <div class="course-meta">
+        <span>{{ course.duration }}</span>
+        <span>{{ course.level }}</span>
+        <span>{{ course.rating }}</span>
+      </div>
+
+      <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving enrollment...' : 'Confirm enrollment' }}
+      </button>
+    </div>
+
+    <ng-template #noCourse>
+      <p class="empty-state">The selected course is not available right now.</p>
+    </ng-template>
+
+    <p *ngIf="message" class="status-message" [ngClass]="messageType">{{ message }}</p>
+  </div>
+</section>

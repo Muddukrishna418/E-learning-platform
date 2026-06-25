@@ -10,6 +10,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { MainLayout } from './layouts/main-layout/main-layout';
+import { EnrollPageComponent } from './features/student/enroll/enroll';
 
 export const routes: Routes = [
   {
@@ -79,6 +80,18 @@ export const routes: Routes = [
       {
         path: '',
         component: StudentCourseDetailsComponent
+      }
+    ]
+  },
+
+  {
+    path: 'enroll/:id',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: EnrollPageComponent
       }
     ]
   },

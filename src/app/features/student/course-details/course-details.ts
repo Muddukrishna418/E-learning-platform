@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CourseService, Course } from '../../../core/services/course-data.service';
+import { CourseContentService, CourseContentItem } from '../../../core/services/course-content.service';
 import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
 
 @Component({
@@ -16,8 +17,11 @@ export class CourseDetails implements OnInit {
   course?: Course;
   outcomes: string[] = [];
   lessons: string[] = [];
+  content: CourseContentItem[] = [];
+  loadingContent = false;
 
   private courseService = inject(CourseService);
+  private courseContentService = inject(CourseContentService);
 
   getEmojiForCategory(category?: string) {
     const map: { [k: string]: string } = {
@@ -59,12 +63,23 @@ export class CourseDetails implements OnInit {
       ];
       this.lessons = found.lessons ?? [`Introduction to ${found.title}`, 'Core concepts', 'Hands-on project'];
     } else {
-      // Fallback to the first available course
       const all = this.courseService.getCourses();
       this.course = all.length ? all[0] : undefined;
       this.courseId = this.course?.id ?? '1';
       this.outcomes = this.course?.outcomes ?? [];
       this.lessons = this.course?.lessons ?? [];
     }
+
+    this.loadingContent = true;
+    this.courseContentService.getCourseContent(this.courseId).subscribe({
+      next: (items) => {
+        this.content = items;
+        this.loadingContent = false;
+      },
+      error: () => {
+        this.content = [];
+        this.loadingContent = false;
+      }
+    });
   }
 }

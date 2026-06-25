@@ -1,0 +1,13 @@
+package com.elearning.repository;
+
+import com.elearning.entity.Course;
+import com.elearning.entity.CourseContent;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface CourseContentRepository extends JpaRepository<CourseContent, Long> {
+    List<CourseContent> findByCourse(Course course);
+}
