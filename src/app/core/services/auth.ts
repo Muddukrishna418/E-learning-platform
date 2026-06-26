@@ -74,7 +74,7 @@ export class Auth {
   }
 
   private isDemoCredential(email: string, password: string): boolean {
-    return email === 'newstudent@example.com' && password === 'password123';
+    return (email === 'newstudent@example.com' || email === 'test@example.com') && password === 'password123';
   }
 
   private fullNameFromEmail(email: string): string {

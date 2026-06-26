@@ -88,7 +88,7 @@
     <p class="preview-desc">{{ previewCourse.description }}</p>
     <div class="preview-actions">
       <a [routerLink]="['/courses', previewCourse.id]" class="btn btn-primary" (click)="$event.stopPropagation()">View Details</a>
-      <a [routerLink]="['/courses', previewCourse.id]" [queryParams]="{ enroll: true }" class="btn btn-enroll" (click)="$event.stopPropagation()">Enroll Now</a>
+      <a [routerLink]="['/enroll', previewCourse.id]" class="btn btn-enroll" (click)="$event.stopPropagation()">Enroll Now</a>
       <button type="button" class="btn" (click)="closePreview(); $event.stopPropagation()">Close</button>
     </div>
   </div>

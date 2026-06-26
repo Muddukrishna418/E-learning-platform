@@ -10,12 +10,10 @@
     </div>
   </div>
 
-  <div class="courses-grid">
-    <a
-      *ngFor="let course of courses"
-      class="course-card"
-      [routerLink]="['/courses', course.id]"
-    >
+  <div *ngIf="loading" class="state">Loading courses...</div>
+
+  <div class="courses-grid" *ngIf="!loading && courses.length > 0">
+    <article class="course-card" *ngFor="let course of courses">
       <div class="course-image" [ngClass]="'image-' + course.id">
         <div class="course-logo">
           <app-course-logo [title]="course.title" [emoji]="getEmojiForCategory(course.category)"></app-course-logo>
@@ -30,8 +28,13 @@
           <span>{{ course.level }}</span>
           <span>{{ course.rating }}</span>
         </div>
+        <a class="view-btn" [routerLink]="['/courses', course.id]">View</a>
       </div>
-    </a>
+    </article>
+  </div>
+
+  <div *ngIf="!loading && courses.length === 0" class="state">
+    No courses are available right now. Please try again shortly.
   </div>
 </section>
 

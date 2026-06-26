@@ -1,0 +1,77 @@
+<section class="learning-material-page">
+  <div class="learning-card">
+    <a class="back-link" [routerLink]="['/courses', courseId]">← Back to course</a>
+
+    <div *ngIf="loading" class="state">Loading learning material...</div>
+    <div *ngIf="error" class="state error">{{ error }}</div>
+
+    <div *ngIf="item" class="material-body">
+      <div class="material-header">
+        <div class="header-copy">
+          <p class="eyebrow">{{ courseTitle }}</p>
+          <h2>{{ item.title }}</h2>
+          <p class="material-description">{{ item.summary || item.description || 'A focused lesson designed to help you study this topic step by step.' }}</p>
+        </div>
+        <button type="button" class="action-btn" [class.completed]="item.completed" (click)="markCompleted()">
+          {{ item.completed ? 'Completed ✓' : 'Mark as completed' }}
+        </button>
+      </div>
+
+      <div class="stats-row">
+        <span class="stat-pill">{{ item.type }}</span>
+        <span class="stat-pill">{{ item.estimatedDuration || '10 min' }}</span>
+        <span class="stat-pill">{{ item.difficulty || 'Beginner' }}</span>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-view">
+          <div class="media-shell">
+            <video *ngIf="item.type === 'VIDEO'" controls [src]="item.url" class="media"></video>
+            <img *ngIf="item.type === 'IMAGE'" [src]="item.url" [alt]="item.title" class="media" />
+            <div *ngIf="item.type !== 'VIDEO' && item.type !== 'IMAGE'" class="text-panel">
+              <p>Open the embedded resource for this lesson.</p>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <h3>Lesson overview</h3>
+            <p>{{ item.contentBody || item.description || 'This lesson includes guidance, examples, and a short reflection to help you learn confidently.' }}</p>
+            <div class="study-points" *ngIf="studyPoints.length">
+              <h4>Study highlights</h4>
+              <ul>
+                <li *ngFor="let point of studyPoints">{{ point }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="panel-card">
+            <h3>What you’ll learn</h3>
+            <ul>
+              <li *ngFor="let objective of learningObjectives">{{ objective }}</li>
+            </ul>
+          </div>
+          <div class="panel-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li *ngFor="let takeaway of keyTakeaways">{{ takeaway }}</li>
+            </ul>
+          </div>
+          <div class="panel-card">
+            <h3>Study tips</h3>
+            <ul>
+              <li *ngFor="let tip of studyTips">{{ tip }}</li>
+            </ul>
+          </div>
+          <div class="panel-card" *ngIf="resourceLinks.length">
+            <h3>Helpful resources</h3>
+            <a class="resource-link" *ngFor="let resource of resourceLinks" [href]="resource.url" target="_blank" rel="noopener noreferrer">
+              {{ resource.title }}
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>

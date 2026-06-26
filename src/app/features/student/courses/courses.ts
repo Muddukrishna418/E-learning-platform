@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CourseService, Course } from '../../../core/services/course-data.service';
 import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
@@ -13,9 +13,12 @@ import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
 })
 export class Courses implements OnInit {
   courses: Course[] = [];
+  allCourses: Course[] = [];
   selectedCategory: string | null = null;
+  loading = false;
   private courseService = inject(CourseService);
   private route = inject(ActivatedRoute);
+  private cdr = inject(ChangeDetectorRef);
 
   getEmojiForCategory(category?: string) {
     const map: { [k: string]: string } = {
@@ -38,14 +41,46 @@ export class Courses implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
-      const allCourses = this.courseService.getCourses();
-      
-      if (category) {
-        this.selectedCategory = category;
-        this.courses = allCourses.filter(course => course.category === category);
-      } else {
-        this.selectedCategory = null;
-        this.courses = allCourses;
+      this.selectedCategory = category || null;
+      this.loadCourses(category);
+    });
+  }
+
+  filterByCategory(category: string | null): void {
+    this.selectedCategory = category;
+    if (!category) {
+      this.courses = [...this.allCourses];
+      return;
+    }
+
+    const normalizedCategory = category.trim().toLowerCase();
+    this.courses = this.allCourses.filter((course) =>
+      (course.category || '').trim().toLowerCase() === normalizedCategory
+    );
+  }
+
+  private loadCourses(category?: string): void {
+    this.loading = true;
+    this.courses = [];
+
+    const fallbackCourses = this.courseService.getCourses();
+    this.allCourses = fallbackCourses;
+    this.filterByCategory(category || null);
+    this.loading = false;
+    this.cdr.detectChanges();
+
+    this.courseService.getCoursesFromApi().subscribe({
+      next: (courses) => {
+        this.allCourses = courses;
+        this.filterByCategory(category || null);
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.allCourses = fallbackCourses;
+        this.filterByCategory(category || null);
+        this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

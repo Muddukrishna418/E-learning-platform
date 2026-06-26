@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, timeout } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface Course {
   id: string;
@@ -204,7 +208,7 @@ export class CourseService {
     }
   ];
 
-  constructor() {
+  constructor(private http: HttpClient) {
     // Ensure there are at least 50 additional auto-generated courses
     this.generateAdditionalCourses(50);
   }
@@ -366,8 +370,101 @@ export class CourseService {
     return this.courses;
   }
 
+  private inferCategory(course: Partial<Course> | any): string {
+    const explicitCategory = `${course?.category ?? course?.categoryName ?? ''}`.trim();
+    if (explicitCategory) {
+      return explicitCategory;
+    }
+
+    const haystack = `${course?.title ?? ''} ${course?.description ?? ''}`.toLowerCase();
+    const categoryHints: Array<[string, string[]]> = [
+      ['Development', ['web development', 'developer', 'javascript', 'angular', 'spring', 'frontend', 'backend', 'react', 'node', 'typescript', 'full-stack', 'python', 'java', 'mobile', 'devops', 'testing', 'game', 'flutter', 'django']],
+      ['Marketing', ['marketing', 'seo', 'social media', 'advertising', 'campaign', 'brand', 'growth', 'email', 'ppc', 'content marketing']],
+      ['Data', ['data', 'analytics', 'dashboard', 'reporting', 'metrics', 'statistics', 'sql', 'database']],
+      ['Design', ['design', 'ux', 'ui', 'interface', 'wireframe', 'user experience', 'visual']],
+      ['AI', ['artificial intelligence', 'ai', 'nlp', 'transformers', 'vision', 'deep learning', 'reinforcement']],
+      ['Machine Learning', ['machine learning', 'neural', 'classification', 'regression', 'model']],
+      ['Cloud', ['cloud', 'aws', 'azure', 'docker', 'kubernetes']],
+      ['Cybersecurity', ['security', 'cyber', 'ethical hacking', 'penetration', 'network']],
+      ['Photography', ['photography', 'photo', 'camera', 'editing']],
+      ['Business', ['business', 'leadership', 'management', 'strategy']],
+      ['IT', ['it', 'systems', 'networking', 'infrastructure', 'support']],
+      ['Personal Development', ['personal', 'communication', 'productivity', 'career', 'mindset']]
+    ];
+
+    const matchedCategory = categoryHints.find(([, keywords]) => keywords.some((keyword) => haystack.includes(keyword)));
+    return matchedCategory?.[0] ?? 'Development';
+  }
+
+  private normalizeCourse(course: Partial<Course> | any, fallback?: Course): Course {
+    const normalizedId = course?.id?.toString() ?? fallback?.id ?? '';
+    const normalizedTitle = course?.title ?? fallback?.title ?? 'Untitled Course';
+    const normalizedDescription = course?.description ?? fallback?.description ?? 'A practical course designed to build valuable skills.';
+    const normalizedDuration = course?.duration ?? fallback?.duration ?? 'Self-paced';
+    const normalizedLevel = course?.level ?? fallback?.level ?? 'Beginner';
+    const normalizedCategory = this.inferCategory(course) ?? fallback?.category ?? 'Development';
+    const normalizedLogo = course?.logo ?? fallback?.logo ?? normalizedTitle.slice(0, 3).toUpperCase();
+    const normalizedLogoUrl = course?.logoUrl ?? course?.thumbnailUrl ?? fallback?.logoUrl;
+    const normalizedRating = course?.rating ?? (typeof course?.averageRating === 'number' ? `${course.averageRating.toFixed(1)} ★` : fallback?.rating ?? '4.8 ★');
+
+    return {
+      id: normalizedId,
+      title: normalizedTitle,
+      description: normalizedDescription,
+      duration: normalizedDuration,
+      level: normalizedLevel,
+      category: normalizedCategory,
+      logo: normalizedLogo,
+      logoUrl: normalizedLogoUrl,
+      rating: normalizedRating,
+      outcomes: course?.outcomes ?? fallback?.outcomes,
+      lessons: course?.lessons ?? fallback?.lessons,
+    };
+  }
+
+  getCoursesFromApi(): Observable<Course[]> {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    return this.http.get<Partial<Course>[] | { content?: Partial<Course>[] }>(`${environment.apiUrl}/v1/courses`, { headers }).pipe(
+      timeout(8000),
+      map((response) => {
+        const courses = Array.isArray(response) ? response : response?.content ?? [];
+        const normalizedCourses = courses.map((course) => this.normalizeCourse(course));
+
+        if (normalizedCourses.length === 0) {
+          return this.courses;
+        }
+
+        if (normalizedCourses.length < 6) {
+          return [...normalizedCourses, ...this.courses.filter((fallbackCourse) => !normalizedCourses.some((course) => course.id === fallbackCourse.id))];
+        }
+
+        return normalizedCourses;
+      }),
+      catchError(() => of(this.courses))
+    );
+  }
+
   getCourseById(id: string): Course | undefined {
     return this.courses.find(course => course.id === id);
+  }
+
+  getCourseByIdFromApi(id: string): Observable<Course | undefined> {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    return this.http.get<Partial<Course> | any>(`${environment.apiUrl}/v1/courses/${id}`, { headers }).pipe(
+      timeout(8000),
+      map((course) => {
+        if (!course) {
+          return this.getCourseById(id);
+        }
+
+        return this.normalizeCourse(course, this.getCourseById(id));
+      }),
+      catchError(() => of(this.getCourseById(id)))
+    );
   }
 
   getCoursesByCategory(category: string): Course[] {

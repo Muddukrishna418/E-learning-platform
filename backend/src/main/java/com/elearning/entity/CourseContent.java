@@ -30,6 +30,28 @@ public class CourseContent {
 
     private String description;
 
+    @Column(columnDefinition = "TEXT")
+    private String summary;
+
+    @Column(columnDefinition = "TEXT")
+    private String contentBody;
+
+    @Column(columnDefinition = "TEXT")
+    private String learningObjectives;
+
+    @Column(columnDefinition = "TEXT")
+    private String keyTakeaways;
+
+    @Column(columnDefinition = "TEXT")
+    private String studyTips;
+
+    @Column(columnDefinition = "TEXT")
+    private String resources;
+
+    private String estimatedDuration;
+
+    private String difficulty;
+
     @Column(nullable = false)
     private Integer orderIndex;
 }

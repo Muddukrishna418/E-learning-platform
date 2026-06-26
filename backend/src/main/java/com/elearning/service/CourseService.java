@@ -5,4 +5,6 @@ import com.elearning.dto.CourseResponse;
 
 public interface CourseService {
     CourseResponse createCourse(CourseRequest request, Long instructorId);
+    java.util.List<CourseResponse> getAllCourses();
+    CourseResponse getCourseById(Long courseId);
 }

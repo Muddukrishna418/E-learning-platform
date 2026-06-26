@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,5 +42,19 @@ public class CourseServiceImpl implements CourseService {
                 .build();
 
         return courseMapper.toResponse(courseRepository.save(course));
+    }
+
+    @Override
+    public List<CourseResponse> getAllCourses() {
+        return courseRepository.findAll().stream()
+                .map(courseMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public CourseResponse getCourseById(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        return courseMapper.toResponse(course);
     }
 }

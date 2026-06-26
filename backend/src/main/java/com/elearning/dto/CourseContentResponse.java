@@ -15,5 +15,14 @@ public class CourseContentResponse {
     private String type;
     private String url;
     private String description;
+    private String summary;
+    private String contentBody;
+    private String learningObjectives;
+    private String keyTakeaways;
+    private String studyTips;
+    private String resources;
+    private String estimatedDuration;
+    private String difficulty;
     private Integer orderIndex;
+    private boolean completed;
 }

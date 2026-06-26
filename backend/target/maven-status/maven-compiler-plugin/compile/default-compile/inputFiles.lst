@@ -17,6 +17,7 @@ D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\s
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\Course.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\CourseContent.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\Enrollment.java
+D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\EnrollmentContentProgress.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\Role.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\entity\User.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\exception\ApiException.java
@@ -25,6 +26,7 @@ D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\s
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\mapper\CourseMapper.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\repository\CourseContentRepository.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\repository\CourseRepository.java
+D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\repository\EnrollmentContentProgressRepository.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\repository\EnrollmentRepository.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\repository\UserRepository.java
 D:\Adobe Photoshop  CS3 + Crack\My-Personal-Github\E-learning-platform\backend\src\main\java\com\elearning\security\JwtAuthenticationFilter.java

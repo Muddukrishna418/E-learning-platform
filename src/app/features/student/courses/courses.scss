@@ -129,7 +129,8 @@
 }
 
 .courses-grid {
-  width: min(1606px, calc(100% - 48px));
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));

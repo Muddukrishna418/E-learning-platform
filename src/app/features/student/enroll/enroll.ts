@@ -38,10 +38,8 @@ export class EnrollComponent implements OnInit {
 
   enrollNow(): void {
     if (!this.authService.isAuthenticated()) {
-      this.message = 'Please sign in to continue with enrollment.';
-      this.messageType = 'error';
-      this.router.navigate(['/login']);
-      return;
+      this.message = 'No active session found. Continuing in demo mode and saving your enrollment locally.';
+      this.messageType = 'info';
     }
 
     if (!this.course) {
@@ -57,6 +55,12 @@ export class EnrollComponent implements OnInit {
       this.isSubmitting = false;
       this.message = result.message;
       this.messageType = result.success ? 'success' : 'error';
+
+      if (result.success) {
+        this.router.navigate(['/courses', this.course?.id], {
+          queryParams: { enroll: 'true' }
+        });
+      }
     });
   }
 }

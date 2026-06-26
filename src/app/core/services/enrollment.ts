@@ -30,11 +30,14 @@ export class EnrollmentService {
     }
 
     return this.http.post<{ message?: string }>(`${environment.apiUrl}/v1/enrollments`, { courseId }, { headers }).pipe(
-      map(() => ({
-        success: true,
-        message: 'Enrollment saved successfully.',
-        source: 'backend' as const
-      })),
+      map(() => {
+        this.persistLocalEnrollment(courseId);
+        return {
+          success: true,
+          message: 'Enrollment saved successfully.',
+          source: 'backend' as const
+        };
+      }),
       catchError(() => {
         this.persistLocalEnrollment(courseId);
         return of({

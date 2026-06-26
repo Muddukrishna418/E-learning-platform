@@ -11,17 +11,24 @@
 
   .dashboard-body {
     display: flex;
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow: hidden;
+    align-items: stretch;
 
     app-sidebar {
+      flex: 0 0 320px;
+      max-width: 320px;
+      min-width: 280px;
       flex-shrink: 0;
     }
 
     .main-content {
-      flex: 1;
+      flex: 1 1 auto;
+      min-width: 0;
       overflow-y: auto;
       background: #ffffff;
+      display: block;
     }
   }
 }

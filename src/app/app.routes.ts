@@ -11,6 +11,7 @@ import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { EnrollPageComponent } from './features/student/enroll/enroll';
+import { LearningMaterialComponent } from './features/student/learning-material/learning-material';
 
 export const routes: Routes = [
   {
@@ -63,7 +64,6 @@ export const routes: Routes = [
   {
     path: 'courses',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -75,7 +75,6 @@ export const routes: Routes = [
   {
     path: 'courses/:id',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -87,7 +86,6 @@ export const routes: Routes = [
   {
     path: 'enroll/:id',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -99,7 +97,6 @@ export const routes: Routes = [
   {
     path: 'student/courses',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -111,11 +108,22 @@ export const routes: Routes = [
   {
     path: 'student/courses/:id',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',
         component: StudentCourseDetailsComponent
+      }
+    ]
+  },
+
+  {
+    path: 'courses/:courseId/content/:contentId',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        component: LearningMaterialComponent
       }
     ]
   },
