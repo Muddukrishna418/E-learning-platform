@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CourseService } from '../../core/services/course-data.service';
+import { FormsModule } from '@angular/forms';
+import { CourseService, Course } from '../../core/services/course-data.service';
 import { Auth } from '../../core/services/auth';
 import { CourseLogo } from '../../shared/components/course-logo/course-logo';
 
@@ -12,12 +13,15 @@ interface CategorySummary {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, CommonModule, CourseLogo],
+  imports: [RouterLink, CommonModule, FormsModule, CourseLogo],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home implements OnInit {
   categories: CategorySummary[] = [];
+  searchResults: Course[] = [];
+  searchTerm = '';
+  hasSearched = false;
   private courseService = inject(CourseService);
   private router = inject(Router);
   private auth = inject(Auth);
@@ -49,6 +53,18 @@ export class Home implements OnInit {
 
   exploreCategory(categoryName: string): void {
     this.router.navigate(['/courses'], { queryParams: { category: categoryName } });
+  }
+
+  searchCourses(): void {
+    const term = this.searchTerm.trim();
+    this.hasSearched = true;
+
+    if (!term) {
+      this.router.navigate(['/courses']);
+      return;
+    }
+
+    this.router.navigate(['/courses'], { queryParams: { search: term } });
   }
 
   getEmojiForCategory(category?: string) {

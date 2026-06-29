@@ -22,6 +22,10 @@ export class CourseDetails implements OnInit {
   loadingContent = false;
   isEnrolled = false;
   accessMessage = '';
+  relatedCourses: Course[] = [];
+  enrollmentMessage = '';
+  enrollmentMessageType: 'success' | 'error' | 'info' = 'info';
+  enrolling = false;
 
   private courseService = inject(CourseService);
   private courseContentService = inject(CourseContentService);
@@ -54,6 +58,69 @@ export class CourseDetails implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.courseId = params.get('id') || '1';
       this.loadCourse();
+    });
+  }
+
+  enrollNow(): void {
+    if (!this.course) {
+      this.enrollmentMessage = 'Unable to enroll because the selected course was not found.';
+      this.enrollmentMessageType = 'error';
+      return;
+    }
+
+    this.enrollmentMessage = '';
+    this.enrollmentMessageType = 'info';
+    this.enrolling = true;
+
+    this.enrollmentService.enroll(this.course.id).subscribe((result) => {
+      this.enrolling = false;
+      this.enrollmentMessage = result.message;
+      this.enrollmentMessageType = result.success ? 'success' : 'error';
+
+      if (result.success) {
+        this.isEnrolled = true;
+        this.accessMessage = 'Your course enrollment is active. Your learning materials are ready.';
+        this.loadCourseContent(false);
+      }
+    });
+  }
+
+  private loadRelatedCourses(category?: string): void {
+    if (!category) {
+      this.relatedCourses = [];
+      return;
+    }
+
+    this.relatedCourses = this.courseService.getCourses()
+      .filter((course) => course.category === category && course.id !== this.courseId)
+      .slice(0, 3);
+  }
+
+  private loadCourseContent(openContent: boolean): void {
+    if (!this.courseId) {
+      return;
+    }
+
+    this.loadingContent = true;
+    this.courseContentService.getCourseContent(this.courseId).subscribe({
+      next: (items) => {
+        this.content = items;
+        this.accessMessage = items.length > 0 ? 'Your enrolled course content is ready.' : 'Your enrollment is active, but no content is available yet.';
+        this.loadingContent = false;
+
+        if (openContent && items.length > 0) {
+          this.openFirstLesson();
+        }
+      },
+      error: () => {
+        this.content = this.buildFallbackContent();
+        this.accessMessage = 'Your enrollment is active. Preview content is ready for this course.';
+        this.loadingContent = false;
+
+        if (openContent && this.content.length > 0) {
+          this.openFirstLesson();
+        }
+      }
     });
   }
 
@@ -105,6 +172,16 @@ export class CourseDetails implements OnInit {
 
   private loadCourse() {
     const shouldOpenContent = this.route.snapshot.queryParamMap.get('enroll') === 'true';
+    const fallbackCourse = this.courseService.getCourseById(this.courseId);
+
+    this.course = fallbackCourse;
+    this.outcomes = fallbackCourse?.outcomes ?? [];
+    this.lessons = fallbackCourse?.lessons ?? [];
+    this.loadRelatedCourses(fallbackCourse?.category);
+    this.isEnrolled = this.enrollmentService.getEnrolledCourseIds().includes(this.courseId);
+    this.accessMessage = this.isEnrolled
+      ? 'Loading your learning materials...'
+      : 'Enroll to unlock videos and images for this course.';
 
     this.courseService.getCourseByIdFromApi(this.courseId).subscribe((found) => {
       if (found) {
@@ -115,18 +192,16 @@ export class CourseDetails implements OnInit {
           'Project-based learning'
         ];
         this.lessons = found.lessons ?? [`Introduction to ${found.title}`, 'Core concepts', 'Hands-on project'];
-      } else {
-        const all = this.courseService.getCourses();
-        this.course = all.length ? all[0] : undefined;
-        this.courseId = this.course?.id ?? '1';
-        this.outcomes = this.course?.outcomes ?? [];
-        this.lessons = this.course?.lessons ?? [];
+        this.loadRelatedCourses(found.category);
       }
 
-      this.isEnrolled = this.enrollmentService.getEnrolledCourseIds().includes(this.courseId);
-      this.accessMessage = this.isEnrolled
-        ? 'Loading your learning materials...'
-        : 'Enroll to unlock videos and images for this course.';
+      if (!this.course) {
+        this.enrollmentMessage = 'The selected course could not be found.';
+        this.enrollmentMessageType = 'error';
+        this.content = [];
+        this.loadingContent = false;
+        return;
+      }
 
       if (!this.isEnrolled) {
         this.content = [];
@@ -134,27 +209,7 @@ export class CourseDetails implements OnInit {
         return;
       }
 
-      this.loadingContent = true;
-      this.courseContentService.getCourseContent(this.courseId).subscribe({
-        next: (items) => {
-          this.content = items;
-          this.accessMessage = items.length > 0 ? 'Your enrolled course content is ready.' : 'Your enrollment is active, but no content is available yet.';
-          this.loadingContent = false;
-
-          if (shouldOpenContent && items.length > 0) {
-            this.openFirstLesson();
-          }
-        },
-        error: () => {
-          this.content = this.buildFallbackContent();
-          this.accessMessage = 'Your enrollment is active. Preview content is ready for this course.';
-          this.loadingContent = false;
-
-          if (shouldOpenContent && this.content.length > 0) {
-            this.openFirstLesson();
-          }
-        }
-      });
+      this.loadCourseContent(shouldOpenContent);
     });
   }
 }

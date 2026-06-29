@@ -1,143 +1,111 @@
 <section class="course-details-page">
-  <a routerLink="/courses" class="back-link">← Back to courses</a>
+  <header class="navbar">
+    <a class="logo" routerLink="/">E-Learning Platform</a>
 
-  <ng-container *ngIf="course; else notFound">
-    <div class="course-details-card">
-      <div class="course-hero">
-        <div class="course-hero-text">
-          <div class="hero-badges">
-            <span class="course-tag">{{ courseSummary?.category }}</span>
-            <span class="course-status" [class.enrolled]="isEnrolled">{{ isEnrolled ? 'Enrolled' : 'Ready to start' }}</span>
-          </div>
-          <h2>{{ course.title }}</h2>
-          <p class="course-description">{{ courseSummary?.description }}</p>
-          <div class="course-meta">
-            <span>{{ courseSummary?.duration }}</span>
-            <span>{{ courseSummary?.level }}</span>
-            <span>{{ courseSummary?.rating }}</span>
-          </div>
+    <nav aria-label="Main navigation">
+      <a routerLink="/courses">Courses</a>
+      <a routerLink="/#categories">Categories</a>
+      <a routerLink="/#instructors">Instructors</a>
+      <a routerLink="/#testimonials">Testimonials</a>
+    </nav>
 
-          <div class="cta-row">
-            <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isEnrolling">
-              {{ isEnrolling ? 'Enrolling...' : (isEnrolled ? 'Continue Learning' : 'Enroll Now') }}
-            </button>
-            <p class="status-note">{{ isEnrolled ? 'You already have access to this course.' : 'Start learning today with guided lessons and practical projects.' }}</p>
-          </div>
-        </div>
+    <div class="actions">
+      <input type="search" placeholder="Search courses" aria-label="Search courses" />
+      <!-- <a routerLink="/login" class="login">Login</a>
+      <a routerLink="/signup" class="signup">Sign Up</a> -->
+    </div>
+  </header>
 
-        <div class="course-image" [ngClass]="'image-' + courseId">
-          <img *ngIf="courseSummary?.thumbnailUrl || course?.logoUrl; else fallbackImage"
-               [src]="courseSummary?.thumbnailUrl || course?.logoUrl"
-               [alt]="course.title" />
-          <ng-template #fallbackImage>
+  <a routerLink="/courses" class="back-link">Back to courses</a>
+    <ng-container *ngIf="course; else notFound">
+      <div class="course-details-card">
+        <div class="course-hero">
+          <div class="course-hero-text">
+            <span class="course-tag">{{ course.category }}</span>
+            <h2>{{ course.title }}</h2>
+            <p class="course-description">{{ course.description }}</p>
+            <div class="course-meta">
+              <span>{{ course.duration }}</span>
+              <span>{{ course.level }}</span>
+              <span>{{ course.rating }}</span>
+            </div>
+          </div>
+          <div class="course-image" [ngClass]="'image-' + courseId">
             <div class="course-logo">
               <app-course-logo [title]="course?.title" [emoji]="getEmojiForCategory(course?.category)"></app-course-logo>
             </div>
-          </ng-template>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Instructor</h3>
-          <div class="instructor-row">
-            <div class="avatar">{{ courseSummary?.instructorAvatar }}</div>
-            <div>
-              <strong>{{ courseSummary?.instructorName }}</strong>
-              <p>{{ courseSummary?.instructorTitle }}</p>
-            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <h3>Quick facts</h3>
-          <ul class="meta-list">
-            <li><strong>Category:</strong> {{ courseSummary?.category }}</li>
-            <li><strong>Lessons:</strong> {{ courseSummary?.lessonsCount }}</li>
-            <li><strong>Modules:</strong> {{ courseSummary?.modulesCount }}</li>
-            <li><strong>Language:</strong> {{ courseSummary?.language }}</li>
-          </ul>
+
+        <div class="course-info-grid">
+          <div class="info-panel">
+            <h3>What you'll learn</h3>
+            <ul>
+              <li *ngFor="let outcome of outcomes">{{ outcome }}</li>
+            </ul>
+          </div>
+
+          <div class="info-panel">
+            <h3>Course outline</h3>
+            <ol>
+              <li *ngFor="let lesson of lessons">{{ lesson }}</li>
+            </ol>
+          </div>
         </div>
-        <div class="stat-card">
-          <h3>Students</h3>
-          <ul class="meta-list">
-            <li><strong>Enrolled:</strong> {{ courseSummary?.enrolledStudents }}</li>
-            <li><strong>Reviews:</strong> {{ courseSummary?.rating }} · 4.9/5</li>
-            <li><strong>Price:</strong> {{ courseSummary?.price }}</li>
-            <li><strong>Certificate:</strong> {{ courseSummary?.certificate }}</li>
-          </ul>
+
+        <div class="course-footer-row">
+          <p class="course-id">Course ID: {{ courseId }}</p>
+          <div class="content-actions">
+            <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="enrolling || isEnrolled">
+              {{ isEnrolled ? 'Enrolled' : enrolling ? 'Enrolling...' : 'Enroll now' }}
+            </button>
+            <button *ngIf="isEnrolled && content.length > 0" type="button" class="enroll-btn secondary" (click)="openFirstLesson()">Open study material</button>
+          </div>
         </div>
+
+        <p *ngIf="enrollmentMessage" class="status-message" [ngClass]="enrollmentMessageType">{{ enrollmentMessage }}</p>
+
+        <section class="content-section" *ngIf="isEnrolled || loadingContent">
+          <h3>Course content</h3>
+          <p *ngIf="loadingContent">Loading your learning materials...</p>
+          <div *ngIf="!loadingContent && content.length === 0" class="content-empty">
+            {{ accessMessage }}
+          </div>
+          <div class="content-list" *ngIf="content.length > 0">
+            <article class="content-card" *ngFor="let item of content">
+              <div class="content-head">
+                <span class="content-badge">{{ item.type }}</span>
+                <h4>{{ item.title }}</h4>
+              </div>
+              <p>{{ item.description }}</p>
+              <video *ngIf="item.type === 'VIDEO'" controls [src]="item.url" class="content-media"></video>
+              <img *ngIf="item.type === 'IMAGE'" [src]="item.url" [alt]="item.title" class="content-media" />
+              <div class="content-actions">
+                <a class="enroll-btn" [routerLink]="['/courses', courseId, 'content', item.id]">Open lesson</a>
+                <button type="button" class="enroll-btn secondary" (click)="markAsCompleted(item)">
+                  {{ item.completed ? 'Completed' : 'Mark as completed' }}
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="related-section" *ngIf="relatedCourses.length > 0">
+          <h3>Related courses</h3>
+          <div class="related-list">
+            <a class="related-card" *ngFor="let related of relatedCourses" [routerLink]="['/courses', related.id]">
+              <strong>{{ related.title }}</strong>
+              <span>{{ related.category }}</span>
+            </a>
+          </div>
+        </section>
       </div>
+    </ng-container>
 
-      <div class="course-info-grid">
-        <div class="info-panel">
-          <h3>What you'll learn</h3>
-          <ul>
-            <li *ngFor="let outcome of courseSummary?.learningOutcomes">{{ outcome }}</li>
-          </ul>
-        </div>
-
-        <div class="info-panel">
-          <h3>Course syllabus</h3>
-          <ol>
-            <li *ngFor="let lesson of courseSummary?.syllabus">{{ lesson }}</li>
-          </ol>
-        </div>
+    <ng-template #notFound>
+      <div class="course-not-found">
+        <p>Course not found.</p>
+        <a routerLink="/courses">Back to courses</a>
       </div>
-
-      <div class="course-info-grid secondary-grid">
-        <div class="info-panel">
-          <h3>Prerequisites</h3>
-          <ul>
-            <li *ngFor="let item of courseSummary?.prerequisites">{{ item }}</li>
-          </ul>
-        </div>
-
-        <div class="info-panel">
-          <h3>Course features</h3>
-          <ul>
-            <li *ngFor="let feature of courseSummary?.features">{{ feature }}</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="course-footer-row">
-        <p class="course-id">Course ID: {{ courseId }}</p>
-        <div class="content-actions">
-          <button *ngIf="isEnrolled && content.length > 0" type="button" class="enroll-btn secondary" (click)="openFirstLesson()">Open study material</button>
-        </div>
-      </div>
-
-      <section class="content-section" *ngIf="isEnrolled || loadingContent">
-        <h3>Course content</h3>
-        <p *ngIf="loadingContent">Loading your learning materials...</p>
-        <div *ngIf="!loadingContent && content.length === 0" class="content-empty">
-          {{ accessMessage }}
-        </div>
-        <div class="content-list" *ngIf="content.length > 0">
-          <article class="content-card" *ngFor="let item of content">
-            <div class="content-head">
-              <span class="content-badge">{{ item.type }}</span>
-              <h4>{{ item.title }}</h4>
-            </div>
-            <p>{{ item.description }}</p>
-            <video *ngIf="item.type === 'VIDEO'" controls [src]="item.url" class="content-media"></video>
-            <img *ngIf="item.type === 'IMAGE'" [src]="item.url" [alt]="item.title" class="content-media" />
-            <div class="content-actions">
-              <a class="enroll-btn" [routerLink]="['/courses', courseId, 'content', item.id]">Open lesson</a>
-              <button type="button" class="enroll-btn secondary" (click)="markAsCompleted(item)">
-                {{ item.completed ? 'Completed' : 'Mark as completed' }}
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
-    </div>
-  </ng-container>
-
-  <ng-template #notFound>
-    <div class="course-not-found">
-      <p>Course not found.</p>
-      <a routerLink="/courses">Back to courses</a>
-    </div>
-  </ng-template>
+    </ng-template>
 </section>

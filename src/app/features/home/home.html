@@ -22,6 +22,29 @@
           <a href="#" class="secondary">Explore categories</a>
         </div>
 
+        <div class="search-panel">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search courses by title, category, or keyword"
+            aria-label="Search courses"
+            class="search-input"
+          />
+          <button type="button" class="primary search-button" (click)="searchCourses()">Search Courses</button>
+        </div>
+
+        <div *ngIf="hasSearched" class="search-results">
+          <h3 *ngIf="searchResults.length > 0">Matching courses</h3>
+          <h3 *ngIf="searchResults.length === 0">No courses found</h3>
+
+          <div class="search-result-list" *ngIf="searchResults.length > 0">
+            <a class="search-result-card" *ngFor="let course of searchResults" [routerLink]="['/courses', course.id]">
+              <strong>{{ course.title }}</strong>
+              <span>{{ course.category }}</span>
+            </a>
+          </div>
+        </div>
+
         <div class="stats">
           <div><strong>10k+</strong><span>Students</span></div>
           <div><strong>500+</strong><span>Courses</span></div>
@@ -44,7 +67,7 @@
     <section class="why-categories" id="categories">
       <div class="why-categories-grid">
         <div class="categories-panel">
-          <h2>Popular categories</h2>
+          <h2>Popular categories</h2>,,
 
           <div class="category-grid">
             <button *ngFor="let category of categories" (click)="exploreCategory(category.name)" class="category-card">

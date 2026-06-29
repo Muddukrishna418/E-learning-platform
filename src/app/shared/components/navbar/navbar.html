@@ -55,14 +55,16 @@
           placeholder="Search courses..."
           class="search-input"
           aria-label="Search courses"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="searchCourses()"
         />
-        <span class="search-icon">🔍</span>
+        <button type="button" class="search-button" (click)="searchCourses()">🔍</button>
       </div>
 
       <!-- Auth Links -->
       <div class="auth-links" *ngIf="!isAuthenticated">
-        <a routerLink="/login" class="btn-login">Login</a>
-        <a routerLink="/signup" class="btn-signup">Sign Up</a>
+        <!-- <a routerLink="/login" class="btn-login">Login</a>
+        <a routerLink="/signup" class="btn-signup">Sign Up</a> -->
       </div>
 
       <!-- User Menu -->

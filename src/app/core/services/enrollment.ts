@@ -8,6 +8,8 @@ export interface EnrollmentResult {
   success: boolean;
   message: string;
   source: 'backend' | 'local';
+  courseId?: string;
+  firstContentId?: number;
 }
 
 @Injectable({
@@ -29,13 +31,15 @@ export class EnrollmentService {
       });
     }
 
-    return this.http.post<{ message?: string }>(`${environment.apiUrl}/v1/enrollments`, { courseId }, { headers }).pipe(
-      map(() => {
+    return this.http.post<{ message?: string; courseId?: string; firstContentId?: number }>(`${environment.apiUrl}/v1/enrollments`, { courseId }, { headers }).pipe(
+      map((response) => {
         this.persistLocalEnrollment(courseId);
         return {
           success: true,
-          message: 'Enrollment saved successfully.',
-          source: 'backend' as const
+          message: response.message ?? 'Enrollment saved successfully.',
+          source: 'backend' as const,
+          courseId: response.courseId?.toString() ?? courseId,
+          firstContentId: response.firstContentId
         };
       }),
       catchError(() => {

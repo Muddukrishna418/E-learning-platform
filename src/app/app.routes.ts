@@ -119,7 +119,6 @@ export const routes: Routes = [
   {
     path: 'courses/:courseId/content/:contentId',
     component: DashboardLayout,
-    canActivate: [authGuard],
     children: [
       {
         path: '',

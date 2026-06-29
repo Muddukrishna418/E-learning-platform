@@ -15,6 +15,7 @@ export class Courses implements OnInit {
   courses: Course[] = [];
   allCourses: Course[] = [];
   selectedCategory: string | null = null;
+  searchQuery: string | null = null;
   loading = false;
   private courseService = inject(CourseService);
   private route = inject(ActivatedRoute);
@@ -41,7 +42,9 @@ export class Courses implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
+      const search = params['search'];
       this.selectedCategory = category || null;
+      this.searchQuery = search ? search.toString() : null;
       this.loadCourses(category);
     });
   }
@@ -59,6 +62,18 @@ export class Courses implements OnInit {
     );
   }
 
+  filterBySearch(query: string | null): void {
+    if (!query) {
+      return;
+    }
+
+    const normalizedQuery = query.trim().toLowerCase();
+    this.courses = this.courses.filter((course) => {
+      const haystack = `${course.title} ${course.description} ${course.category}`.toLowerCase();
+      return haystack.includes(normalizedQuery);
+    });
+  }
+
   private loadCourses(category?: string): void {
     this.loading = true;
     this.courses = [];
@@ -66,6 +81,7 @@ export class Courses implements OnInit {
     const fallbackCourses = this.courseService.getCourses();
     this.allCourses = fallbackCourses;
     this.filterByCategory(category || null);
+    this.filterBySearch(this.searchQuery);
     this.loading = false;
     this.cdr.detectChanges();
 
@@ -73,12 +89,14 @@ export class Courses implements OnInit {
       next: (courses) => {
         this.allCourses = courses;
         this.filterByCategory(category || null);
+        this.filterBySearch(this.searchQuery);
         this.loading = false;
         this.cdr.detectChanges();
       },
       error: () => {
         this.allCourses = fallbackCourses;
         this.filterByCategory(category || null);
+        this.filterBySearch(this.searchQuery);
         this.loading = false;
         this.cdr.detectChanges();
       }

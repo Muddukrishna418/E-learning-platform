@@ -57,9 +57,12 @@ export class EnrollComponent implements OnInit {
       this.messageType = result.success ? 'success' : 'error';
 
       if (result.success) {
-        this.router.navigate(['/courses', this.course?.id], {
-          queryParams: { enroll: 'true' }
-        });
+        const firstContentId = result.firstContentId;
+        if (firstContentId) {
+          this.router.navigate(['/courses', this.course?.id, 'content', firstContentId]);
+        } else {
+          this.router.navigate(['/courses', this.course?.id]);
+        }
       }
     });
   }

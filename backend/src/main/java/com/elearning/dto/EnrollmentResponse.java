@@ -13,4 +13,5 @@ public class EnrollmentResponse {
     private String message;
     private Long courseId;
     private Long userId;
+    private Long firstContentId;
 }
