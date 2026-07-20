@@ -43,6 +43,14 @@ export class Courses implements OnInit {
     return [...new Set(this.allCourses.map(course => course.category).filter(Boolean))];
   }
 
+  getFormattedPrice(course: Course): string {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(course.price || 0);
+  }
+
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];

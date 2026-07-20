@@ -66,16 +66,10 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-<<<<<<< HEAD
-<<<<<<< HEAD
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
-=======
->>>>>>> parent of 70b22dd7 (initialcommit)
-=======
->>>>>>> parent of 70b22dd7 (initialcommit)
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>

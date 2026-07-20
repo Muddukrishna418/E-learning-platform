@@ -99,6 +99,7 @@ export class Auth {
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
     }
     this.isAuthenticatedSubject.next(false);
   }

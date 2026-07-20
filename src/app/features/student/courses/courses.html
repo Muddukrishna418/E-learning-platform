@@ -34,11 +34,26 @@
         <span class="course-tag">{{ course.category }}</span>
         <h3>{{ course.title }}</h3>
         <p>{{ course.description }}</p>
+
         <div class="course-meta">
           <span>{{ course.duration }}</span>
           <span>{{ course.level }}</span>
           <span>{{ course.rating }}</span>
         </div>
+
+        <div class="course-stats">
+          <span class="stat-pill">👥 {{ course.students.toLocaleString('en-IN') }} learners</span>
+          <span class="stat-pill">📘 {{ course.lessonsCount }} lessons</span>
+        </div>
+
+        <div class="course-price-row">
+          <div>
+            <small>Starting from</small>
+            <strong>{{ getFormattedPrice(course) }}</strong>
+          </div>
+          <span class="best-seller">Popular</span>
+        </div>
+
         <div class="course-actions">
           <a class="view-btn" [routerLink]="['/courses', course.id]">View</a>
           <a class="buy-btn" [routerLink]="['/enroll', course.id]">Buy Now</a>

@@ -22,16 +22,12 @@ export class Login {
 
   constructor(
     private router: Router,
-    private authService: Auth
-    , private courseService: CourseService
+    private authService: Auth,
+    private courseService: CourseService
   ) {
     const courses = this.courseService.getCourses();
     this.totalCourses = courses.length;
     this.categoriesCount = new Set(courses.map(c => c.category)).size;
-
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/home'], { replaceUrl: true });
-    }
   }
 
   onSubmit(form: NgForm): void {

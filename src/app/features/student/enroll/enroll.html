@@ -2,8 +2,6 @@
   <div class="enroll-card">
     <a class="back-link" routerLink="/courses">← Back to courses</a>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     <div class="checkout-header">
       <div>
         <h2>Secure checkout</h2>
@@ -11,29 +9,49 @@
       </div>
       <span class="secure-pill">Easebuzz test mode</span>
     </div>
-=======
-    <h2>Enroll in your course</h2>
-    <p class="subtitle">Secure your place and start learning right away.</p>
->>>>>>> parent of 70b22dd7 (initialcommit)
-=======
-    <h2>Enroll in your course</h2>
-    <p class="subtitle">Secure your place and start learning right away.</p>
->>>>>>> parent of 70b22dd7 (initialcommit)
 
     <div *ngIf="course; else noCourse" class="course-summary">
-      <div class="summary-header">
-        <span class="course-tag">{{ course.category }}</span>
-        <h3>{{ course.title }}</h3>
-      </div>
-      <p>{{ course.description }}</p>
-      <div class="course-meta">
-        <span>{{ course.duration }}</span>
-        <span>{{ course.level }}</span>
-        <span>{{ course.rating }}</span>
+      <div class="summary-layout">
+        <section class="course-highlight-card">
+          <div class="summary-header">
+            <span class="course-tag">{{ course.category }}</span>
+            <h3>{{ course.title }}</h3>
+          </div>
+
+          <p>{{ course.description }}</p>
+
+          <div class="course-meta">
+            <span>{{ course.duration }}</span>
+            <span>{{ course.level }}</span>
+            <span>{{ course.rating }}</span>
+          </div>
+
+          <div class="price-box">
+            <div>
+              <small>Course fee</small>
+              <strong>{{ formattedPrice }}</strong>
+            </div>
+            <span class="secure-badge">Instant access</span>
+          </div>
+        </section>
+
+        <aside class="order-summary-card">
+          <h4>Order summary</h4>
+          <div class="summary-row">
+            <span>Course fee</span>
+            <strong>{{ formattedPrice }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Platform fee</span>
+            <strong>{{ orderSummary.platformFee | currency: 'INR':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="summary-row total-row">
+            <span>Total payable</span>
+            <strong>{{ orderSummary.total | currency: 'INR':'symbol':'1.0-0' }}</strong>
+          </div>
+        </aside>
       </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       <div class="payment-layout">
         <aside class="payment-sidebar">
           <div class="sidebar-title">Payment method</div>
@@ -91,16 +109,6 @@
           </button>
         </div>
       </div>
-=======
-      <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isSubmitting">
-        {{ isSubmitting ? 'Saving enrollment...' : 'Confirm enrollment' }}
-      </button>
->>>>>>> parent of 70b22dd7 (initialcommit)
-=======
-      <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isSubmitting">
-        {{ isSubmitting ? 'Saving enrollment...' : 'Confirm enrollment' }}
-      </button>
->>>>>>> parent of 70b22dd7 (initialcommit)
     </div>
 
     <ng-template #noCourse>
