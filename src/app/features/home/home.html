@@ -1,0 +1,290 @@
+<section class="home-page">
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <p class="tag">ONLINE LEARNING</p>
+
+        <div *ngIf="isLoggedIn" class="welcome-panel">
+          <p class="welcome">Welcome back, <strong>{{ userName }}</strong> 👋</p>
+          <p class="welcome-sub">Continue where you left off or explore recommended courses.</p>
+        </div>
+
+        <h1>Master skills for the future</h1>
+
+        <p class="desc">Discover thousands of courses, learn from experts, and grow your career at your own pace.</p>
+
+        <div class="buttons">
+          <a routerLink="/courses" class="primary">Browse courses</a>
+          <a href="#" class="secondary">Explore categories</a>
+        </div>
+
+        <div class="search-panel">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search courses by title, category, or keyword"
+            aria-label="Search courses"
+            class="search-input"
+          />
+          <button type="button" class="primary search-button" (click)="searchCourses()">Search Courses</button>
+        </div>
+
+        <div *ngIf="hasSearched" class="search-results">
+          <h3 *ngIf="searchResults.length > 0">Matching courses</h3>
+          <h3 *ngIf="searchResults.length === 0">No courses found</h3>
+
+          <div class="search-result-list" *ngIf="searchResults.length > 0">
+            <a class="search-result-card" *ngFor="let course of searchResults" [routerLink]="['/courses', course.id]">
+              <strong>{{ course.title }}</strong>
+              <span>{{ course.category }}</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div><strong>10k+</strong><span>Students</span></div>
+          <div><strong>500+</strong><span>Courses</span></div>
+          <div><strong>95%</strong><span>Success rate</span></div>
+        </div>
+      </div>
+
+      <a class="hero-card" routerLink="/courses/4">
+        <span class="badge">Popular this week</span>
+        <h2>UI/UX Design Masterclass</h2>
+        <p>Build modern interfaces and improve user experience.</p>
+
+        <div class="card-footer">
+          <span>8 weeks</span>
+          <span>4.9 &#9733;</span>
+        </div>
+      </a>
+    </section>
+
+    <section class="why-categories" id="categories">
+      <div class="why-categories-grid">
+        <div class="categories-panel">
+          <h2>Popular categories</h2>,,
+
+          <div class="category-grid">
+            <button *ngFor="let category of categories" (click)="exploreCategory(category.name)" class="category-card">
+              <span class="category-name">{{ category.name }}</span>
+              <span class="category-count">{{ category.count }} courses</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="my-courses-section" *ngIf="isLoggedIn">
+      <div class="title-row">
+        <h2>My Courses</h2>
+      </div>
+
+      <div *ngIf="myCourses.length > 0; else noMyCourses" class="my-course-grid">
+        <article class="my-course-card" *ngFor="let course of myCourses">
+          <div class="thumb">
+            <div class="course-logo">
+              <img
+                *ngIf="course.thumbnailUrl"
+                [src]="course.thumbnailUrl"
+                [alt]="course.title"
+                class="my-course-thumbnail"
+              />
+              <app-course-logo
+                *ngIf="!course.thumbnailUrl"
+                [title]="course.title"
+                [emoji]="getEmojiForCategory(course.category || 'Development')"
+              ></app-course-logo>
+            </div>
+          </div>
+
+          <div class="my-course-body">
+            <span class="course-pill">{{ course.category || 'Learning Path' }}</span>
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
+
+            <div class="my-course-meta">
+              <span>Instructor: {{ course.instructorName || 'Your mentor' }}</span>
+              <span>Enrolled: {{ course.enrollmentDate | date:'MMM d, y' }}</span>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-bar">
+                <span [style.width.%]="course.progressPercentage || 0"></span>
+              </div>
+              <strong>{{ course.progressPercentage || 0 }}%</strong>
+            </div>
+
+            <a class="continue-btn" [routerLink]="['/courses', course.courseId]">Continue Learning</a>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #noMyCourses>
+        <div class="empty-state-card">
+          <h3>You haven't enrolled in any courses yet.</h3>
+          <p>Pick a course from the catalog and start learning today.</p>
+          <a routerLink="/courses" class="primary">Browse Courses</a>
+        </div>
+      </ng-template>
+    </section>
+
+    <section class="featured" id="courses">
+      <div class="title-row">
+        <h2>Featured courses</h2>
+      </div>
+
+      <div class="course-grid">
+        <a class="course-card" routerLink="/courses/1">
+          <div class="thumb blue">
+            <div class="course-logo">
+              <app-course-logo [title]="'Full-Stack Web Development'" [emoji]="getEmojiForCategory('Development')"></app-course-logo>
+            </div>
+          </div>
+          <h3>Full-Stack Web Development</h3>
+          <p>Learn modern web technologies from scratch.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/2">
+          <div class="thumb red">
+            <div class="course-logo">
+              <app-course-logo [title]="'Digital Marketing Strategy'" [emoji]="getEmojiForCategory('Marketing')"></app-course-logo>
+            </div>
+          </div>
+          <h3>Digital Marketing Strategy</h3>
+          <p>Master SEO, content, and campaign planning.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/3">
+          <div class="thumb green">
+            <div class="course-logo">
+              <app-course-logo [title]="'Data Analytics Basics'" [emoji]="getEmojiForCategory('Data')"></app-course-logo>
+            </div>
+          </div>
+          <h3>Data Analytics Basics</h3>
+          <p>Understand dashboards, metrics, and insights.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/4">
+          <div class="thumb purple">
+            <div class="course-logo">
+              <app-course-logo [title]="'UI/UX Design Masterclass'" [emoji]="getEmojiForCategory('Design')"></app-course-logo>
+            </div>
+          </div>
+          <h3>UI/UX Design Masterclass</h3>
+          <p>Design beautiful and usable interfaces from scratch.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/5">
+          <div class="thumb orange">
+            <div class="course-logo">
+              <app-course-logo [title]="'Cloud Foundations'" [emoji]="getEmojiForCategory('Cloud')"></app-course-logo>
+            </div>
+          </div>
+          <h3>Cloud Foundations</h3>
+          <p>Core cloud concepts and practical deployment patterns.</p>
+        </a>
+
+        <a class="course-card" routerLink="/courses/6">
+          <div class="thumb teal">
+            <div class="course-logo">
+              <app-course-logo [title]="'Product Management Essentials'" [emoji]="getEmojiForCategory('Product')"></app-course-logo>
+            </div>
+          </div>
+          <h3>Product Management Essentials</h3>
+          <p>From discovery to delivery: run successful product teams.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="how-learning" id="how-learning">
+      <h2>How e‑learning accelerates your professional growth</h2>
+      <p class="lead">Practical, industry-aligned learning that builds job-ready skills and helps you stand out to employers.</p>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-icon blue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+              <circle cx="12" cy="12" r="2.2" fill="currentColor"></circle>
+              <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <h4>Skill-focused projects</h4>
+          <p>Build real work samples that showcase practical ability.</p>
+        </div>
+
+        <div class="how-card">
+          <div class="how-icon amber" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <rect x="3.5" y="4" width="17" height="14" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+              <path d="M8 8h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <h4>Curated curricula</h4>
+          <p>Learn the most relevant topics in a guided path.</p>
+        </div>
+
+        <div class="how-card">
+          <div class="how-icon green" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+              <path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <h4>Flexible pacing</h4>
+          <p>Study around your schedule without losing momentum.</p>
+        </div>
+
+        <div class="how-card">
+          <div class="how-icon purple" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <circle cx="9" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+              <path d="M4 20c1-4 8-4 9 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+              <circle cx="17" cy="10" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+            </svg>
+          </div>
+          <h4>Industry mentors</h4>
+          <p>Get feedback from people working in the field.</p>
+        </div>
+
+        <div class="how-card">
+          <div class="how-icon teal" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <polyline points="3 17 8 11 13 14 20 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              <path d="M21 21v-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <h4>Measurable growth</h4>
+          <p>Track progress with assessments and certificates.</p>
+        </div>
+
+        <div class="how-card">
+          <div class="how-icon orange" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <rect x="3.5" y="7" width="17" height="10" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+              <path d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <h4>Career outcomes</h4>
+          <p>Work-ready skills you can include on your CV and portfolio.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="instructors" id="instructors">
+      <h2>Meet our instructors</h2>
+      <div class="instructor-grid">
+        <div class="instructor-card">Sarah Lee<span>Product Design</span></div>
+        <div class="instructor-card">David Kim<span>Software Engineering</span></div>
+        <div class="instructor-card">Mia Patel<span>Marketing</span></div>
+      </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+      <h2>What learners say</h2>
+      <blockquote>
+        The courses are practical, engaging, and helped me grow my career in just a few months.
+      </blockquote>
+    </section>
+  </main>
+</section>

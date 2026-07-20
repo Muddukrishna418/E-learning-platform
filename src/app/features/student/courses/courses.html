@@ -1,0 +1,54 @@
+<section class="courses-page">
+  <div class="courses-header">
+    <div>
+      <span class="eyebrow">📚 Explore learning</span>
+      <h2>{{ selectedCategory ? '🎯 ' + selectedCategory + ' Courses' : '✨ All courses' }}</h2>
+      <p *ngIf="selectedCategory" class="filter-info">
+        Showing {{ courses.length }} course{{ courses.length !== 1 ? 's' : '' }} in <strong>{{ selectedCategory }}</strong>
+        <a routerLink="/courses" class="clear-filter">✕ Clear filter</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="feature-strip" *ngIf="allCourses.length > 0">
+    <div class="feature-pill">📘 {{ allCourses.length }} curated courses</div>
+    <div class="feature-pill">⚡ Instant access to lessons</div>
+    <div class="feature-pill">⭐ High-rated learning paths</div>
+  </div>
+
+  <div class="filter-toolbar" *ngIf="getCategoryFilters().length > 0">
+    <button type="button" class="filter-chip" [class.active]="!selectedCategory" (click)="filterByCategory(null)">All</button>
+    <button type="button" class="filter-chip" *ngFor="let category of getCategoryFilters()" [class.active]="selectedCategory === category" (click)="filterByCategory(category)">{{ category }}</button>
+  </div>
+
+  <div *ngIf="loading" class="state">Loading courses...</div>
+
+  <div class="courses-grid" *ngIf="!loading && courses.length > 0">
+    <article class="course-card" *ngFor="let course of courses">
+      <div class="course-image" [ngClass]="'image-' + course.id">
+        <div class="course-logo">
+          <app-course-logo [title]="course.title" [emoji]="getEmojiForCategory(course.category)"></app-course-logo>
+        </div>
+      </div>
+      <div class="course-content">
+        <span class="course-tag">{{ course.category }}</span>
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.description }}</p>
+        <div class="course-meta">
+          <span>{{ course.duration }}</span>
+          <span>{{ course.level }}</span>
+          <span>{{ course.rating }}</span>
+        </div>
+        <div class="course-actions">
+          <a class="view-btn" [routerLink]="['/courses', course.id]">View</a>
+          <a class="buy-btn" [routerLink]="['/enroll', course.id]">Buy Now</a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div *ngIf="!loading && courses.length === 0" class="state">
+    No courses are available right now. Please try again shortly.
+  </div>
+</section>
+

@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: elearning-postgres
+    environment:
+      POSTGRES_DB: elearning_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d elearning_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: elearning-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/elearning_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin123
+      EMAIL_HOST: localhost
+      EMAIL_PORT: 1025
+      SMTP_AUTH: "false"
+      SMTP_STARTTLS: "false"
+    ports:
+      - "8081:8081"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: elearning-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:4200"
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+
+volumes:
+  postgres_data:

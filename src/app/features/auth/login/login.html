@@ -1,0 +1,68 @@
+<section class="login-page">
+  <div class="login-panel">
+    <div class="brand-block">
+      <span class="brand-badge"></span>
+      <h2>Welcome back</h2>
+      <h1 class="brand-title">E-Learn — Practical, industry-aligned online learning</h1>
+      <p class="subtitle">Sign in to continue your learning journey</p>
+
+      <p class="lead">E-Learn brings together expert instructors, hands-on projects, and industry-vetted curriculum to help you build job-ready skills. Learn at your own pace, earn certificates, and get mentorship to accelerate your career in AI, web development, data science, and more.</p>
+
+      <div class="platform-highlights">
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-value">{{ totalCourses }}+</div>
+            <div class="stat-label">Courses</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{ categoriesCount }}</div>
+            <div class="stat-label">Categories</div>
+          </div>
+        </div>
+
+        <ul class="feature-list">
+          <li>Instructor-led courses with hands-on projects</li>
+          <li>Certificates of completion for every course</li>
+          <li>Flexible learning — self-paced and cohort options</li>
+        </ul>
+      </div>
+    </div>
+
+    <form class="login-card" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+      <div class="field-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          required
+          email
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Enter your password"
+        />
+      </div>
+      
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+
+      <button type="submit">Login</button>
+
+      <div class="login-links">
+        <a routerLink="/signup">Create account</a>
+        <a routerLink="/forgot-password">Forgot password?</a>
+      </div>
+    </form>
+  </div>
+</section>

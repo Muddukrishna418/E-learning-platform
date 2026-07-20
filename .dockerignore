@@ -1,0 +1,8 @@
+node_modules
+backend/target
+backend/.mvn
+frontend/node_modules
+dist
+.git
+.gitignore
+*.log

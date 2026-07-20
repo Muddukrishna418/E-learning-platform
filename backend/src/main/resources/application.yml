@@ -1,0 +1,30 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elearning_db
+    username: postgres
+    password: admin123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET}
+    expiration-ms: 86400000
+
+easbuzz:
+  merchant-key: ${EASEBUZZ_MERCHANT_KEY:test-merchant-key}
+  merchant-salt: ${EASEBUZZ_MERCHANT_SALT:test-merchant-salt}
+  base-url: ${EASEBUZZ_BASE_URL:http://localhost:4202/payment/callback}
+  currency: INR
+  test-mode: true

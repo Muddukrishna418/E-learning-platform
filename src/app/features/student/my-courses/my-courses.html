@@ -1,0 +1,128 @@
+<section class="my-courses-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Student Dashboard</p>
+      <h1>My Courses</h1>
+      <p class="lead">Your enrolled learning path, progress, and next best actions in one place.</p>
+    </div>
+
+    <a class="primary-cta" routerLink="/courses">Browse more courses</a>
+  </div>
+
+  <div class="overview-grid">
+    <article class="overview-card accent">
+      <span class="overview-label">Active enrollments</span>
+      <strong>{{ courses.length }}</strong>
+      <small>Courses you can continue anytime</small>
+    </article>
+
+    <article class="overview-card">
+      <span class="overview-label">Average progress</span>
+      <strong>{{ totalProgress }}%</strong>
+      <small>Across your current learning plan</small>
+    </article>
+
+    <article class="overview-card">
+      <span class="overview-label">Nearly completed</span>
+      <strong>{{ completedCount }}</strong>
+      <small>Courses at 80% or above</small>
+    </article>
+  </div>
+
+  <div class="feature-strip">
+    <article class="feature-card">
+      <span class="feature-title">Study streak</span>
+      <strong>{{ studyStreak }} days</strong>
+      <small>Keep the momentum going with a quick lesson today.</small>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-title">Upcoming lessons</span>
+      <strong>{{ upcomingLessons }}</strong>
+      <small>Suggested sessions ready for your next review.</small>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-title">Certificates</span>
+      <strong>{{ certificateCount }}</strong>
+      <small>Milestones you have already earned.</small>
+    </article>
+  </div>
+
+  <div class="focus-panel" *ngIf="featuredCourse">
+    <div class="focus-content">
+      <span class="focus-badge">Continue learning</span>
+      <h2>{{ featuredCourse.title }}</h2>
+      <p>{{ featuredCourse.description }}</p>
+
+      <div class="focus-meta">
+        <span>Instructor: {{ featuredCourse.instructorName || 'Your mentor' }}</span>
+        <span>Category: {{ featuredCourse.category || 'Learning path' }}</span>
+        <span>Enrolled: {{ featuredCourse.enrollmentDate | date:'mediumDate' }}</span>
+      </div>
+
+      <div class="progress-line">
+        <div class="progress-line-track">
+          <span [style.width.%]="featuredCourse.progressPercentage || 0"></span>
+        </div>
+        <strong>{{ featuredCourse.progressPercentage || 0 }}%</strong>
+      </div>
+    </div>
+
+    <div class="focus-actions">
+      <a class="primary-cta" [routerLink]="['/courses', featuredCourse.courseId]">Resume course</a>
+      <a class="ghost-cta" routerLink="/courses">View catalog</a>
+    </div>
+  </div>
+
+  <div class="section-heading">
+    <h2>Your learning path</h2>
+    <p>These are the courses you have enrolled in, shown directly from your latest enrollment activity.</p>
+  </div>
+
+  <div class="course-list" *ngIf="courses.length > 0; else noCourses">
+    <article class="course-item" *ngFor="let course of courses">
+      <div class="course-thumb">
+        <div class="course-logo-wrap">
+          <img *ngIf="course.thumbnailUrl" [src]="course.thumbnailUrl" [alt]="course.title" class="thumb-image" />
+          <app-course-logo *ngIf="!course.thumbnailUrl" [title]="course.title" [emoji]="'📚'"></app-course-logo>
+        </div>
+      </div>
+
+      <div class="course-body">
+        <div class="course-top-row">
+          <span class="tag">{{ course.category || 'Learning path' }}</span>
+          <span class="tag subtle">{{ getProgressLabel(course.progressPercentage || 0) }}</span>
+        </div>
+
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.description }}</p>
+
+        <div class="meta-row">
+          <span>Instructor: {{ course.instructorName || 'Your mentor' }}</span>
+          <span>Enrolled {{ course.enrollmentDate | date:'mediumDate' }}</span>
+        </div>
+
+        <div class="progress-line">
+          <div class="progress-line-track">
+            <span [style.width.%]="course.progressPercentage || 0"></span>
+          </div>
+          <strong>{{ course.progressPercentage || 0 }}%</strong>
+        </div>
+
+        <div class="course-actions">
+          <a class="primary-cta small" [routerLink]="['/courses', course.courseId]">Continue</a>
+          <a class="ghost-cta small" routerLink="/courses">Review syllabus</a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #noCourses>
+    <div class="empty-state">
+      <h3>No enrollments yet</h3>
+      <p>Browse the course catalog and enroll in a course to see it appear here instantly.</p>
+      <a class="primary-cta" routerLink="/courses">Explore courses</a>
+    </div>
+  </ng-template>
+</section>

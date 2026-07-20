@@ -1,0 +1,112 @@
+<section class="enroll-page">
+  <div class="enroll-card">
+    <a class="back-link" routerLink="/courses">← Back to courses</a>
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <div class="checkout-header">
+      <div>
+        <h2>Secure checkout</h2>
+        <p class="subtitle">Pay with Easebuzz test mode and start learning instantly.</p>
+      </div>
+      <span class="secure-pill">Easebuzz test mode</span>
+    </div>
+=======
+    <h2>Enroll in your course</h2>
+    <p class="subtitle">Secure your place and start learning right away.</p>
+>>>>>>> parent of 70b22dd7 (initialcommit)
+=======
+    <h2>Enroll in your course</h2>
+    <p class="subtitle">Secure your place and start learning right away.</p>
+>>>>>>> parent of 70b22dd7 (initialcommit)
+
+    <div *ngIf="course; else noCourse" class="course-summary">
+      <div class="summary-header">
+        <span class="course-tag">{{ course.category }}</span>
+        <h3>{{ course.title }}</h3>
+      </div>
+      <p>{{ course.description }}</p>
+      <div class="course-meta">
+        <span>{{ course.duration }}</span>
+        <span>{{ course.level }}</span>
+        <span>{{ course.rating }}</span>
+      </div>
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+      <div class="payment-layout">
+        <aside class="payment-sidebar">
+          <div class="sidebar-title">Payment method</div>
+          <button
+            type="button"
+            *ngFor="let option of paymentMethodOptions"
+            class="payment-option"
+            [class.active]="selectedPaymentMethodType === option.value"
+            (click)="selectedPaymentMethodType = option.value"
+          >
+            <span class="payment-option-label">{{ option.label }}</span>
+            <span class="payment-option-tag">{{ option.tag }}</span>
+          </button>
+        </aside>
+
+        <div class="payment-form-area">
+          <div *ngIf="selectedPaymentMethodType === 'card' || selectedPaymentMethodType === 'debit_card'" class="card-form-wrapper">
+            <label class="card-label" for="cardNumber">Card number</label>
+            <input id="cardNumber" class="text-input" type="text" [(ngModel)]="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19" />
+
+            <div class="inline-fields">
+              <div class="field-wrapper">
+                <label class="card-label" for="cardExpiry">Expiry</label>
+                <input id="cardExpiry" class="text-input" type="text" [(ngModel)]="cardExpiry" placeholder="MM/YY" maxlength="5" />
+              </div>
+
+              <div class="field-wrapper">
+                <label class="card-label" for="cardCvv">CVV</label>
+                <input id="cardCvv" class="text-input" type="text" [(ngModel)]="cardCvv" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="selectedPaymentMethodType === 'upi'" class="field-wrapper">
+            <label class="card-label" for="upiId">UPI ID</label>
+            <input id="upiId" class="text-input" type="text" [(ngModel)]="upiId" placeholder="name@upi" />
+          </div>
+
+          <div *ngIf="selectedPaymentMethodType === 'netbanking'" class="field-wrapper">
+            <label class="card-label" for="bankName">Bank name</label>
+            <input id="bankName" class="text-input" type="text" [(ngModel)]="bankName" placeholder="Your bank name" />
+          </div>
+
+          <div *ngIf="selectedPaymentMethodType === 'google_pay'" class="field-wrapper">
+            <label class="card-label" for="googlePayEmail">Google Pay email</label>
+            <input id="googlePayEmail" class="text-input" type="email" [(ngModel)]="googlePayEmail" placeholder="you@example.com" />
+          </div>
+
+          <div class="checkout-note">
+            Use any valid test card format with a test-mode checkout flow. The page validates card data locally before it sends the payment request to the backend.
+          </div>
+
+          <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isProcessPaymentDisabled">
+            {{ isSubmitting ? 'Processing payment...' : 'Process Payment' }}
+          </button>
+        </div>
+      </div>
+=======
+      <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving enrollment...' : 'Confirm enrollment' }}
+      </button>
+>>>>>>> parent of 70b22dd7 (initialcommit)
+=======
+      <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving enrollment...' : 'Confirm enrollment' }}
+      </button>
+>>>>>>> parent of 70b22dd7 (initialcommit)
+    </div>
+
+    <ng-template #noCourse>
+      <p class="empty-state">The selected course is not available right now.</p>
+    </ng-template>
+
+    <p *ngIf="message" class="status-message" [ngClass]="messageType">{{ message }}</p>
+  </div>
+</section>

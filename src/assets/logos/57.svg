@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Cloud logo">
+	<defs>
+		<linearGradient id="gCloud" x1="0" x2="1">
+			<stop offset="0" stop-color="#60A5FA"/>
+			<stop offset="1" stop-color="#3B82F6"/>
+		</linearGradient>
+	</defs>
+	<rect width="80" height="80" rx="12" fill="url(#gCloud)"/>
+	<!-- cloud icon -->
+	<g transform="translate(12,20)" fill="#fff" opacity="0.95">
+		<path d="M18 6a8 8 0 0 1 7.75 6.1A6 6 0 0 1 44 18H16a6 6 0 0 1-1.2-11.9A8 8 0 0 1 18 6z"/>
+		<path d="M10 24h34v2H10z" fill="#ffffff" opacity="0.08"/>
+	</g>
+	<text x="50%" y="73" dominant-baseline="middle" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="12" fill="#fff" opacity="0.95">Cloud</text>
+</svg>

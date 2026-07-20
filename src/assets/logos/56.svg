@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Machine Learning logo">
+	<defs>
+		<linearGradient id="gML" x1="0" x2="1">
+			<stop offset="0" stop-color="#06B6D4"/>
+			<stop offset="1" stop-color="#0284C7"/>
+		</linearGradient>
+	</defs>
+	<rect width="80" height="80" rx="12" fill="url(#gML)"/>
+	<!-- neuron / network icon -->
+	<g transform="translate(12,14)" fill="#fff" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+		<circle cx="12" cy="10" r="4" fill="#fff" opacity="0.95"/>
+		<circle cx="40" cy="10" r="4" fill="#fff" opacity="0.95"/>
+		<circle cx="26" cy="34" r="5" fill="#fff" opacity="0.95"/>
+		<path d="M16 12 L34 12" stroke="#fff" stroke-width="2" opacity="0.9"/>
+		<path d="M22 16 L28 30" stroke="#fff" stroke-width="2" opacity="0.9"/>
+		<path d="M34 16 L28 30" stroke="#fff" stroke-width="2" opacity="0.9"/>
+	</g>
+	<text x="50%" y="73" dominant-baseline="middle" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="12" fill="#fff" opacity="0.95">ML</text>
+</svg>

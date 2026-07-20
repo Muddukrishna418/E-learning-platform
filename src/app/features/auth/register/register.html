@@ -1,0 +1,48 @@
+<section class="auth-page">
+  <form class="auth-card" #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+    <h2>Create account</h2>
+    <p class="subtitle">Start your learning journey today</p>
+
+    <label for="name">Full name</label>
+    <input
+      id="name"
+      name="name"
+      type="text"
+      [(ngModel)]="name"
+      required
+      placeholder="Jane Doe"
+    />
+
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      [(ngModel)]="email"
+      required
+      email
+      placeholder="you@example.com"
+    />
+
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      [(ngModel)]="password"
+      required
+      placeholder="Create a password"
+    />
+
+    <!-- <p class="helper-text">Demo signup: {{ demoEmail }} / {{ demoPassword }}</p> -->
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+
+    <button type="submit">Sign up</button>
+
+    <p class="auth-footer">
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </form>
+</section>
