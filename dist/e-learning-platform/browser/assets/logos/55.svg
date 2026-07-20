@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="AI logo">
+	<defs>
+		<linearGradient id="gAI" x1="0" x2="1">
+			<stop offset="0" stop-color="#4F46E5"/>
+			<stop offset="1" stop-color="#7C3AED"/>
+		</linearGradient>
+	</defs>
+	<rect width="80" height="80" rx="12" fill="url(#gAI)"/>
+	<!-- robot head -->
+	<g transform="translate(16,18)" fill="#fff" opacity="0.92">
+		<rect x="8" y="6" width="48" height="36" rx="6" fill="#ffffff" opacity="0.12"/>
+		<rect x="18" y="12" width="12" height="8" rx="2" fill="#fff"/>
+		<rect x="38" y="12" width="12" height="8" rx="2" fill="#fff"/>
+		<rect x="28" y="26" width="4" height="6" rx="1" fill="#fff"/>
+		<circle cx="10" cy="10" r="2" fill="#fff"/>
+		<circle cx="58" cy="10" r="2" fill="#fff"/>
+		<!-- antenna -->
+		<circle cx="32" cy="2" r="3" fill="#fff" opacity="0.9"/>
+		<path d="M32 5 L32 10" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+	</g>
+	<text x="50%" y="73" dominant-baseline="middle" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="12" fill="#fff" opacity="0.95">AI</text>
+</svg>
