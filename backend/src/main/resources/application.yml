@@ -19,7 +19,7 @@ spring:
 
 app:
   jwt:
-    secret: ${APP_JWT_SECRET:change-me-to-a-long-secure-secret-key-1234567890}
+    secret: change-me-to-a-long-secure-secret-key-1234567890
     expiration-ms: 86400000
 
 easbuzz:

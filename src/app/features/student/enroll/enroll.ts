@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { Course, CourseService } from '../../../core/services/course-data.service';
-import { EnrollmentService } from '../../../core/services/enrollment';
+import { PaymentService } from '../../../core/services/payment';
 
 @Component({
   selector: 'app-enroll',
@@ -36,7 +36,7 @@ export class EnrollComponent implements OnInit {
   ];
 
   private courseService = inject(CourseService);
-  private enrollmentService = inject(EnrollmentService);
+  private paymentService = inject(PaymentService);
   private authService = inject(Auth);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -118,20 +118,44 @@ export class EnrollComponent implements OnInit {
     this.message = '';
     this.cardErrorMessage = '';
 
-    this.enrollmentService.enroll(this.course.id).subscribe((result) => {
-      this.isSubmitting = false;
-      this.message = result.message;
-      this.messageType = result.success ? 'success' : 'error';
+    const paymentMethodId = this.buildPaymentMethodId();
 
-      if (result.success) {
-        const firstContentId = result.firstContentId;
-        if (firstContentId) {
-          this.router.navigate(['/courses', this.course?.id, 'content', firstContentId]);
-        } else {
-          this.router.navigate(['/courses', this.course?.id]);
-        }
+    this.paymentService.purchaseCourse(this.course.id, paymentMethodId, this.selectedPaymentMethodType).subscribe((result) => {
+      this.isSubmitting = false;
+      this.message = result.enrolled ? 'Payment Successful' : (result.message || 'Payment could not be completed at the moment.');
+      this.messageType = result.enrolled ? 'success' : 'error';
+
+      if (result.enrolled) {
+        this.notifyEnrollmentChanged();
+        this.router.navigate(['/my-courses']);
       }
     });
+  }
+
+  private buildPaymentMethodId(): string {
+    const selectedMethod = this.selectedPaymentMethodType;
+
+    if (selectedMethod === 'upi') {
+      return `upi:${this.upiId || 'test-upi'}`;
+    }
+
+    if (selectedMethod === 'netbanking') {
+      return `netbanking:${this.bankName || 'test-bank'}`;
+    }
+
+    if (selectedMethod === 'google_pay') {
+      return `google_pay:${this.googlePayEmail || 'test@example.com'}`;
+    }
+
+    return `card:${(this.cardNumber || '4242424242424242').replace(/\s+/g, '')}`;
+  }
+
+  private notifyEnrollmentChanged(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.dispatchEvent(new CustomEvent('enrollment:changed', { detail: { courseId: this.course?.id } }));
   }
 
   private isValidCardDetails(): boolean {

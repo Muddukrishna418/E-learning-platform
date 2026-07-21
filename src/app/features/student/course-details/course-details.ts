@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CourseService, Course } from '../../../core/services/course-data.service';
 import { CourseContentService, CourseContentItem } from '../../../core/services/course-content.service';
 import { EnrollmentService } from '../../../core/services/enrollment';
+import { PaymentService } from '../../../core/services/payment';
 import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
 
 @Component({
@@ -30,6 +31,7 @@ export class CourseDetails implements OnInit {
   private courseService = inject(CourseService);
   private courseContentService = inject(CourseContentService);
   private enrollmentService = inject(EnrollmentService);
+  private paymentService = inject(PaymentService);
   private router = inject(Router);
 
   getEmojiForCategory(category?: string) {
@@ -72,15 +74,16 @@ export class CourseDetails implements OnInit {
     this.enrollmentMessageType = 'info';
     this.enrolling = true;
 
-    this.enrollmentService.enroll(this.course.id).subscribe((result) => {
+    this.paymentService.purchaseCourse(this.course.id, `card:${this.course.id}`, 'card').subscribe((result) => {
       this.enrolling = false;
-      this.enrollmentMessage = result.message;
-      this.enrollmentMessageType = result.success ? 'success' : 'error';
+      this.enrollmentMessage = result.enrolled ? 'Payment Successful' : (result.message || 'Payment could not be completed at the moment.');
+      this.enrollmentMessageType = result.enrolled ? 'success' : 'error';
 
-      if (result.success) {
+      if (result.enrolled) {
         this.isEnrolled = true;
         this.accessMessage = 'Your course enrollment is active. Your learning materials are ready.';
-        this.loadCourseContent(false);
+        this.notifyEnrollmentChanged();
+        this.router.navigate(['/my-courses']);
       }
     });
   }
@@ -168,6 +171,14 @@ export class CourseDetails implements OnInit {
 
     const firstItem = this.content[0];
     this.router.navigate(['/courses', this.courseId, 'content', firstItem.id]);
+  }
+
+  private notifyEnrollmentChanged(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.dispatchEvent(new CustomEvent('enrollment:changed', { detail: { courseId: this.courseId } }));
   }
 
   private loadCourse() {
