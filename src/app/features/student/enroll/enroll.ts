@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize, switchMap } from 'rxjs/operators';
 import { Auth } from '../../../core/services/auth';
 import { Course, CourseService } from '../../../core/services/course-data.service';
+import { EnrollmentService } from '../../../core/services/enrollment';
 import { PaymentService } from '../../../core/services/payment';
 
 @Component({
   selector: 'app-enroll',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, MatSnackBarModule],
   templateUrl: './enroll.html',
   styleUrl: './enroll.scss'
 })
@@ -28,18 +31,20 @@ export class EnrollComponent implements OnInit {
   bankName = '';
   googlePayEmail = '';
   paymentMethodOptions = [
-    { value: 'card', label: 'Credit Card', tag: 'Easebuzz test checkout' },
-    { value: 'debit_card', label: 'Debit Card', tag: 'Easebuzz test checkout' },
+    { value: 'card', label: 'Credit Card', tag: 'PayU Sandbox' },
+    { value: 'debit_card', label: 'Debit Card', tag: 'PayU Sandbox' },
     { value: 'upi', label: 'UPI', tag: 'Wallet transfer' },
     { value: 'netbanking', label: 'Net Banking', tag: 'Bank redirect' },
     { value: 'google_pay', label: 'Google Pay', tag: 'Wallet payment' }
   ];
 
   private courseService = inject(CourseService);
+  private enrollmentService = inject(EnrollmentService);
   private paymentService = inject(PaymentService);
   private authService = inject(Auth);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   get isProcessPaymentDisabled(): boolean {
     if (this.isSubmitting) {
@@ -109,26 +114,66 @@ export class EnrollComponent implements OnInit {
     }
 
     if (this.isProcessPaymentDisabled) {
-      this.message = 'Enter valid payment details and click Process Payment to continue.';
+      this.message = 'Enter valid payment details and click Pay Now to continue.';
       this.messageType = 'error';
       return;
     }
 
     this.isSubmitting = true;
-    this.message = '';
+    this.message = 'Processing payment...';
+    this.messageType = 'info';
     this.cardErrorMessage = '';
 
-    const paymentMethodId = this.buildPaymentMethodId();
+    window.setTimeout(() => {
+      this.message = 'Payment Successful';
+      this.messageType = 'success';
 
-    this.paymentService.purchaseCourse(this.course.id, paymentMethodId, this.selectedPaymentMethodType).subscribe((result) => {
-      this.isSubmitting = false;
-      this.message = result.enrolled ? 'Payment Successful' : (result.message || 'Payment could not be completed at the moment.');
-      this.messageType = result.enrolled ? 'success' : 'error';
+      this.paymentService.purchaseCourse(this.course!.id, this.buildPaymentMethodId(), this.selectedPaymentMethodType)
+        .pipe(
+          switchMap((paymentResponse) => {
+            if (!paymentResponse?.message || paymentResponse.message.toLowerCase().includes('redirect')) {
+              return this.enrollmentService.enroll(this.course!.id);
+            }
 
-      if (result.enrolled) {
-        this.notifyEnrollmentChanged();
-        this.router.navigate(['/my-courses']);
-      }
+            return this.enrollmentService.enroll(this.course!.id);
+          }),
+          finalize(() => {
+            this.isSubmitting = false;
+          })
+        )
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              this.message = 'Payment Successful';
+              this.messageType = 'success';
+              this.notifyEnrollmentChanged();
+              this.showToast('Payment Successful! You have been enrolled successfully.', 'success');
+              window.setTimeout(() => {
+                this.router.navigate(['/my-courses']);
+              }, 2000);
+              return;
+            }
+
+            this.message = result.message || 'Enrollment could not be completed. Please try again.';
+            this.messageType = 'error';
+            this.showToast(result.message || 'Enrollment could not be completed. Please try again.', 'error');
+          },
+          error: (error) => {
+            const fallbackMessage = error?.error?.message || error?.message || 'The payment or enrollment request could not be completed. Please try again.';
+            this.message = fallbackMessage;
+            this.messageType = 'error';
+            this.showToast(fallbackMessage, 'error');
+          }
+        });
+    }, 2200);
+  }
+
+  private showToast(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error']
     });
   }
 

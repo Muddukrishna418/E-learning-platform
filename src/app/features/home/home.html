@@ -75,60 +75,6 @@
       </div>
     </section>
 
-    <section class="my-courses-section" *ngIf="isLoggedIn">
-      <div class="title-row">
-        <h2>My Courses</h2>
-      </div>
-
-      <div *ngIf="myCourses.length > 0; else noMyCourses" class="my-course-grid">
-        <article class="my-course-card" *ngFor="let course of myCourses">
-          <div class="thumb">
-            <div class="course-logo">
-              <img
-                *ngIf="course.thumbnailUrl"
-                [src]="course.thumbnailUrl"
-                [alt]="course.title"
-                class="my-course-thumbnail"
-              />
-              <app-course-logo
-                *ngIf="!course.thumbnailUrl"
-                [title]="course.title"
-                [emoji]="getEmojiForCategory(course.category || 'Development')"
-              ></app-course-logo>
-            </div>
-          </div>
-
-          <div class="my-course-body">
-            <span class="course-pill">{{ course.category || 'Learning Path' }}</span>
-            <h3>{{ course.title }}</h3>
-            <p>{{ course.description }}</p>
-
-            <div class="my-course-meta">
-              <span>Instructor: {{ course.instructorName || 'Your mentor' }}</span>
-              <span>Enrolled: {{ course.enrollmentDate | date:'MMM d, y' }}</span>
-            </div>
-
-            <div class="progress-row">
-              <div class="progress-bar">
-                <span [style.width.%]="course.progressPercentage || 0"></span>
-              </div>
-              <strong>{{ course.progressPercentage || 0 }}%</strong>
-            </div>
-
-            <a class="continue-btn" [routerLink]="['/courses', course.courseId]">Continue Learning</a>
-          </div>
-        </article>
-      </div>
-
-      <ng-template #noMyCourses>
-        <div class="empty-state-card">
-          <h3>You haven't enrolled in any courses yet.</h3>
-          <p>Pick a course from the catalog and start learning today.</p>
-          <a routerLink="/courses" class="primary">Browse Courses</a>
-        </div>
-      </ng-template>
-    </section>
-
     <section class="featured" id="courses">
       <div class="title-row">
         <h2>Featured courses</h2>

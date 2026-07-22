@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CourseService, Course } from '../../core/services/course-data.service';
 import { Auth } from '../../core/services/auth';
-import { MyCoursesService, MyCourseEnrollment } from '../../core/services/my-courses';
-import { EnrollmentService } from '../../core/services/enrollment';
 import { CourseLogo } from '../../shared/components/course-logo/course-logo';
 
 interface CategorySummary {
@@ -27,12 +25,9 @@ export class Home implements OnInit {
   private courseService = inject(CourseService);
   private router = inject(Router);
   private auth = inject(Auth);
-  private myCoursesService = inject(MyCoursesService);
-  private enrollmentService = inject(EnrollmentService);
 
   isLoggedIn = false;
   userName: string | null = null;
-  myCourses: MyCourseEnrollment[] = [];
 
   ngOnInit(): void {
     this.auth.isAuthenticated$.subscribe(v => {
@@ -43,14 +38,7 @@ export class Home implements OnInit {
         this.userName = null;
       }
 
-      if (this.isLoggedIn) {
-        this.loadMyCourses();
-      } else {
-        this.myCourses = [];
-      }
     });
-
-    window.addEventListener('enrollment:changed', this.refreshOnEnrollmentChange.bind(this));
 
     const courses = this.courseService.getCourses();
     const categoryMap = new Map<string, number>();
@@ -77,39 +65,6 @@ export class Home implements OnInit {
     }
 
     this.router.navigate(['/courses'], { queryParams: { search: term } });
-  }
-
-  private loadMyCourses(): void {
-    this.myCoursesService.getMyCourses().subscribe((courses) => {
-      if (courses.length > 0) {
-        this.myCourses = courses;
-        return;
-      }
-
-      this.myCourses = this.getFallbackMyCourses();
-    });
-  }
-
-  private refreshOnEnrollmentChange(): void {
-    this.loadMyCourses();
-  }
-
-  private getFallbackMyCourses(): MyCourseEnrollment[] {
-    const enrolledIds = this.enrollmentService.getEnrolledCourseIds();
-    const courses = this.courseService.getCourses();
-
-    return courses
-      .filter((course) => enrolledIds.includes(course.id))
-      .map((course) => ({
-        courseId: Number(course.id),
-        title: course.title,
-        description: course.description,
-        thumbnailUrl: course.logoUrl,
-        instructorName: 'Your mentor',
-        category: course.category,
-        progressPercentage: 18,
-        enrollmentDate: new Date().toISOString(),
-      }));
   }
 
   getEmojiForCategory(category?: string) {

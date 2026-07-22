@@ -3,6 +3,7 @@ package com.elearning.service.impl;
 import com.elearning.dto.PaymentIntentRequest;
 import com.elearning.dto.PaymentPurchaseResponse;
 import com.elearning.entity.Course;
+import com.elearning.entity.Payment;
 import com.elearning.entity.User;
 import com.elearning.exception.ApiException;
 import com.elearning.repository.CourseRepository;
@@ -15,15 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,6 +86,47 @@ class PaymentServiceImplTest {
         request.setPaymentMethodType("card");
 
         PaymentPurchaseResponse response = assertDoesNotThrow(() -> paymentService.purchaseCourse(request));
-        assertEquals(true, response.isEnrolled());
+        assertEquals(false, response.isEnrolled());
+        assertEquals("PENDING", response.getPaymentStatus());
+    }
+
+    @Test
+    void shouldCreateEnrollmentOnlyWhenPayuCallbackIsSuccessful() {
+        User user = User.builder().id(2L).email("student2@example.com").build();
+        Course course = Course.builder().id(12L).title("PayU Course").price(BigDecimal.valueOf(149)).build();
+        Payment payment = Payment.builder()
+                .transactionId("PAYU_2_12_1")
+                .paymentStatus("PENDING")
+                .user(user)
+                .course(course)
+                .build();
+
+        when(paymentRepository.findByTransactionId("PAYU_2_12_1")).thenReturn(Optional.of(payment));
+        when(enrollmentRepository.findByUserAndCourse(user, course)).thenReturn(Optional.empty());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        PaymentPurchaseResponse response = assertDoesNotThrow(() -> paymentService.handlePayuCallback("PAYU_2_12_1", "success", "149.00", "PayU Course", "student2@example.com", "Student", "dummy-hash"));
+
+        assertTrue(response.isEnrolled());
+        assertEquals("SUCCESS", payment.getPaymentStatus());
+    }
+
+    @Test
+    void shouldNotCreateEnrollmentWhenPayuCallbackFails() {
+        User user = User.builder().id(3L).email("student3@example.com").build();
+        Course course = Course.builder().id(13L).title("Failed PayU Course").price(BigDecimal.valueOf(199)).build();
+        Payment payment = Payment.builder()
+                .transactionId("PAYU_3_13_1")
+                .paymentStatus("PENDING")
+                .user(user)
+                .course(course)
+                .build();
+
+        when(paymentRepository.findByTransactionId("PAYU_3_13_1")).thenReturn(Optional.of(payment));
+
+        PaymentPurchaseResponse response = assertDoesNotThrow(() -> paymentService.handlePayuCallback("PAYU_3_13_1", "failure", "199.00", "Failed PayU Course", "student3@example.com", "Student", "dummy-hash"));
+
+        assertFalse(response.isEnrolled());
+        assertEquals("FAILED", payment.getPaymentStatus());
     }
 }

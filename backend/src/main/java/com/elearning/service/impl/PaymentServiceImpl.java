@@ -23,10 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -40,17 +42,26 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final EmailService emailService;
 
-    @Value("${easebuzz.merchant-key:test-merchant-key}")
-    private String easebuzzMerchantKey;
+    @Value("${payu.merchant-key:test-payu-key}")
+    private String payuMerchantKey;
 
-    @Value("${easebuzz.merchant-salt:test-merchant-salt}")
-    private String easebuzzMerchantSalt;
+    @Value("${payu.merchant-salt:test-payu-salt}")
+    private String payuMerchantSalt;
 
-    @Value("${easebuzz.base-url:http://localhost:4202/payment/callback}")
-    private String easebuzzBaseUrl;
+    @Value("${payu.base-url:https://test.payu.in/_payment}")
+    private String payuBaseUrl;
 
-    @Value("${easebuzz.currency:INR}")
-    private String easebuzzCurrency = "INR";
+    @Value("${payu.success-url:http://localhost:8082/api/v1/payments/payu/success}")
+    private String payuSuccessUrl;
+
+    @Value("${payu.failure-url:http://localhost:8082/api/v1/payments/payu/failure}")
+    private String payuFailureUrl;
+
+    @Value("${payu.currency:INR}")
+    private String payuCurrency = "INR";
+
+    @Value("${app.frontend-url:http://localhost:4200}")
+    private String frontendUrl;
 
     @Override
     public PaymentPurchaseResponse purchaseCourse(PaymentIntentRequest request) {
@@ -70,29 +81,99 @@ public class PaymentServiceImpl implements PaymentService {
 
         String normalizedPaymentMethod = normalizePaymentMethodType(request.getPaymentMethodType());
         if (request.getPaymentMethodId() == null || request.getPaymentMethodId().isBlank()) {
-            request.setPaymentMethodId("easebuzz_test_mode_payment");
+            request.setPaymentMethodId("payu_test_mode_payment");
         }
 
-        String transactionId = "EB_" + user.getId() + "_" + course.getId() + "_" + System.currentTimeMillis();
+        String transactionId = "PAYU_" + user.getId() + "_" + course.getId() + "_" + System.currentTimeMillis();
         String amount = course.getPrice().setScale(2, RoundingMode.HALF_UP).toPlainString();
-        String redirectUrl = easebuzzBaseUrl + "?courseId=" + course.getId() + "&transactionId=" + URLEncoder.encode(transactionId, StandardCharsets.UTF_8);
+        String productInfo = "Course:" + course.getId();
 
         Payment payment = Payment.builder()
                 .course(course)
                 .user(user)
                 .amount(course.getPrice())
-                .currency(easebuzzCurrency.toUpperCase(Locale.ROOT))
+                .currency(payuCurrency.toUpperCase(Locale.ROOT))
                 .paymentMethod(normalizedPaymentMethod)
-                .paymentStatus("SUCCESS")
+                .paymentStatus("PENDING")
                 .transactionId(transactionId)
                 .paymentDate(LocalDateTime.now())
                 .build();
 
         paymentRepository.save(payment);
-        enrollmentRepository.save(Enrollment.builder()
-                .user(user)
-                .course(course)
-                .build());
+
+        Map<String, String> formData = buildPayuFormData(transactionId, amount, productInfo, user, course);
+
+        return PaymentPurchaseResponse.builder()
+                .paymentIntentId(transactionId)
+                .clientSecret(null)
+                .redirectUrl(payuBaseUrl)
+                .paymentStatus("PENDING")
+                .transactionId(transactionId)
+                .message("Redirecting to PayU for secure payment.")
+                .courseId(course.getId().toString())
+                .userId(user.getId())
+                .enrolled(false)
+                .payuFormData(formData)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public PaymentPurchaseResponse handlePayuCallback(String transactionId, String status, String amount, String productInfo,
+                                                     String email, String firstName, String hash) {
+        if (transactionId == null || transactionId.isBlank()) {
+            return PaymentPurchaseResponse.builder().message("Invalid transaction reference.").enrolled(false).build();
+        }
+
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElse(null);
+        if (payment == null) {
+            return PaymentPurchaseResponse.builder().message("Payment record not found.").enrolled(false).build();
+        }
+
+        User user = payment.getUser();
+        Course course = payment.getCourse();
+        if (user == null || course == null) {
+            return PaymentPurchaseResponse.builder()
+                    .paymentStatus("FAILED")
+                    .transactionId(transactionId)
+                    .message("Payment record is incomplete.")
+                    .enrolled(false)
+                    .build();
+        }
+
+        boolean success = "success".equalsIgnoreCase(status)
+                && hash != null
+                && !hash.isBlank();
+
+        payment.setPaymentStatus(success ? "SUCCESS" : "FAILED");
+        payment.setAmount(new BigDecimal(amount == null || amount.isBlank() ? payment.getAmount().toPlainString() : amount));
+        paymentRepository.save(payment);
+
+        if (!success) {
+            return PaymentPurchaseResponse.builder()
+                    .paymentStatus("FAILED")
+                    .transactionId(transactionId)
+                    .message("Payment was not completed successfully.")
+                    .courseId(course.getId().toString())
+                    .userId(user.getId())
+                    .enrolled(false)
+                    .build();
+        }
+
+        if (paymentRepository.existsByUserAndCourse(user, course) || enrollmentRepository.findByUserAndCourse(user, course).isPresent()) {
+            return PaymentPurchaseResponse.builder()
+                    .paymentStatus("SUCCESS")
+                    .transactionId(transactionId)
+                    .message("Enrollment already exists.")
+                    .courseId(course.getId().toString())
+                    .userId(user.getId())
+                    .enrolled(true)
+                    .build();
+        }
+
+        Enrollment enrollment = Enrollment.builder().user(user).course(course).build();
+        enrollmentRepository.save(enrollment);
 
         try {
             emailService.sendEnrollmentConfirmation(user, course);
@@ -100,16 +181,49 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return PaymentPurchaseResponse.builder()
-                .paymentIntentId(transactionId)
-                .clientSecret(null)
-                .redirectUrl(redirectUrl)
                 .paymentStatus("SUCCESS")
                 .transactionId(transactionId)
-                .message("Payment processed successfully and your enrollment is now active.")
+                .message("Payment completed successfully and your enrollment is now active.")
                 .courseId(course.getId().toString())
                 .userId(user.getId())
                 .enrolled(true)
                 .build();
+    }
+
+    private Map<String, String> buildPayuFormData(String transactionId, String amount, String productInfo, User user, Course course) {
+        Map<String, String> formData = new LinkedHashMap<>();
+        formData.put("key", payuMerchantKey);
+        formData.put("txnid", transactionId);
+        formData.put("amount", amount);
+        formData.put("productinfo", productInfo);
+        formData.put("firstname", user.getFullName() == null || user.getFullName().isBlank() ? user.getEmail() : user.getFullName());
+        formData.put("email", user.getEmail());
+        formData.put("phone", "9999999999");
+        formData.put("surl", payuSuccessUrl);
+        formData.put("furl", payuFailureUrl);
+        formData.put("service_provider", "payu_paisa");
+        formData.put("curl", frontendUrl + "/courses");
+        formData.put("hash", generateHash(transactionId, amount, productInfo, user.getEmail()));
+        return formData;
+    }
+
+    private String generateHash(String transactionId, String amount, String productInfo, String email) {
+        String payload = payuMerchantKey + "|" + transactionId + "|" + amount + "|" + productInfo + "|" + (email == null ? "" : email) + "|||||||||||" + payuMerchantSalt;
+        return sha512(payload);
+    }
+
+    private String sha512(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] bytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hex = new StringBuilder();
+            for (byte b : bytes) {
+                hex.append(String.format(Locale.ROOT, "%02x", b));
+            }
+            return hex.toString();
+        } catch (Exception ex) {
+            return "";
+        }
     }
 
     private User resolveCurrentUser() {

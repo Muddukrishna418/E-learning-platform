@@ -476,16 +476,7 @@ export class CourseService {
       map((response) => {
         const courses = Array.isArray(response) ? response : response?.content ?? [];
         const normalizedCourses = courses.map((course) => this.normalizeCourse(course));
-
-        if (normalizedCourses.length === 0) {
-          return this.courses;
-        }
-
-        if (normalizedCourses.length < 6) {
-          return [...normalizedCourses, ...this.courses.filter((fallbackCourse) => !normalizedCourses.some((course) => course.id === fallbackCourse.id))];
-        }
-
-        return normalizedCourses;
+        return normalizedCourses.length > 0 ? normalizedCourses : this.courses;
       }),
       catchError(() => of(this.courses))
     );

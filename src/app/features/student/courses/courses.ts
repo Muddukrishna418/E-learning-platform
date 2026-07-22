@@ -90,13 +90,6 @@ export class Courses implements OnInit {
     this.loading = true;
     this.courses = [];
 
-    const fallbackCourses = this.courseService.getCourses();
-    this.allCourses = fallbackCourses;
-    this.filterByCategory(category || null);
-    this.filterBySearch(this.searchQuery);
-    this.loading = false;
-    this.cdr.detectChanges();
-
     this.courseService.getCoursesFromApi().subscribe({
       next: (courses) => {
         this.allCourses = courses;
@@ -106,7 +99,7 @@ export class Courses implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.allCourses = fallbackCourses;
+        this.allCourses = this.courseService.getCourses();
         this.filterByCategory(category || null);
         this.filterBySearch(this.searchQuery);
         this.loading = false;

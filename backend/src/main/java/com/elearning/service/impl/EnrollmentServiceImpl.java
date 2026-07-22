@@ -50,7 +50,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .orElse(null);
 
         return EnrollmentResponse.builder()
-                .message("Enrollment saved successfully")
+                .message(enrollment.getId() == null ? "Enrollment saved successfully" : "Enrollment already exists")
                 .courseId(course.getId())
                 .userId(user.getId())
                 .firstContentId(firstContentId)

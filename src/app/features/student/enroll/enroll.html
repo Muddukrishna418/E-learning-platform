@@ -5,9 +5,9 @@
     <div class="checkout-header">
       <div>
         <h2>Secure checkout</h2>
-        <p class="subtitle">Pay with Easebuzz test mode and start learning instantly.</p>
+        <p class="subtitle">Pay with PayU Sandbox and start learning instantly.</p>
       </div>
-      <span class="secure-pill">Easebuzz test mode</span>
+      <span class="secure-pill">PayU Sandbox</span>
     </div>
 
     <div *ngIf="course; else noCourse" class="course-summary">
@@ -101,11 +101,12 @@
           </div>
 
           <div class="checkout-note">
-            Use any valid test card format with a test-mode checkout flow. The page validates card data locally before it sends the payment request to the backend.
+            Use the PayU Sandbox test environment to complete the checkout. The page validates card data locally before it redirects to PayU.
           </div>
 
-          <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isProcessPaymentDisabled">
-            {{ isSubmitting ? 'Processing payment...' : 'Process Payment' }}
+          <button class="enroll-btn" type="button" (click)="enrollNow()" [disabled]="isProcessPaymentDisabled || isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner" aria-hidden="true"></span>
+            {{ isSubmitting ? 'Processing payment...' : 'Pay Now' }}
           </button>
         </div>
       </div>

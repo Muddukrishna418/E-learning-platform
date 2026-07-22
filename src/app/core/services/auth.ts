@@ -37,20 +37,8 @@ export class Auth {
         return true;
       }),
       catchError((error) => {
-        if (this.isDemoCredential(email, password)) {
-          console.warn('Backend login failed for demo credentials; falling back to demo session.', error);
-          const demoResponse: AuthResponse = {
-            token: 'demo-token',
-            fullName: this.fullNameFromEmail(email),
-            email,
-            role: 'STUDENT',
-          };
-          this.persistSession(demoResponse);
-          this.isAuthenticatedSubject.next(true);
-          return of(true);
-        }
-
         console.error('Login failed:', error);
+        this.clearSession();
         return of(false);
       })
     );
@@ -83,16 +71,7 @@ export class Auth {
     }
   }
 
-  private isDemoCredential(email: string, password: string): boolean {
-    return (email === 'newstudent@example.com' || email === 'test@example.com') && password === 'password123';
-  }
-
-  private fullNameFromEmail(email: string): string {
-    const localPart = email.split('@')[0] || 'User';
-    return localPart.replace(/[^a-zA-Z0-9]+/g, ' ').trim() || 'User';
-  }
-
-  logout(): void {
+  private clearSession(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('authToken');
@@ -102,6 +81,10 @@ export class Auth {
       localStorage.removeItem('userId');
     }
     this.isAuthenticatedSubject.next(false);
+  }
+
+  logout(): void {
+    this.clearSession();
   }
 
   isAuthenticated(): boolean {

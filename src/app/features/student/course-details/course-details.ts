@@ -76,6 +76,14 @@ export class CourseDetails implements OnInit {
 
     this.paymentService.purchaseCourse(this.course.id, `card:${this.course.id}`, 'card').subscribe((result) => {
       this.enrolling = false;
+
+      if (result.payuFormData) {
+        this.enrollmentMessage = 'Redirecting you to PayU to complete the payment.';
+        this.enrollmentMessageType = 'info';
+        this.paymentService.redirectToPayu(result.payuFormData);
+        return;
+      }
+
       this.enrollmentMessage = result.enrolled ? 'Payment Successful' : (result.message || 'Payment could not be completed at the moment.');
       this.enrollmentMessageType = result.enrolled ? 'success' : 'error';
 

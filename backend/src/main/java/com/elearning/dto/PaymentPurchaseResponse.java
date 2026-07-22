@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,4 +21,5 @@ public class PaymentPurchaseResponse {
     private String courseId;
     private Long userId;
     private boolean enrolled;
+    private Map<String, String> payuFormData;
 }

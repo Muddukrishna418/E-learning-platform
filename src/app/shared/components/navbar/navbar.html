@@ -38,6 +38,15 @@
       >
         Courses
       </a>
+      <a
+        *ngIf="isAuthenticated"
+        routerLink="/my-courses"
+        routerLinkActive="active"
+        class="nav-link"
+        (click)="closeMobileMenu()"
+      >
+        My Courses
+      </a>
       <a href="#" class="nav-link" (click)="closeMobileMenu()">
         Categories
       </a>

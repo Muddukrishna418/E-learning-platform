@@ -253,10 +253,38 @@
   cursor: wait;
 }
 
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .status-message {
   margin-top: 1rem;
   padding: 0.8rem 1rem;
   border-radius: 0.85rem;
+}
+
+::ng-deep .snackbar-success {
+  background: #166534;
+  color: #ffffff;
+}
+
+::ng-deep .snackbar-error {
+  background: #991b1b;
+  color: #ffffff;
 }
 
 .status-message.success {
