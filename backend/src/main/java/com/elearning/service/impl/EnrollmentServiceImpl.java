@@ -38,19 +38,32 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Course course = courseRepository.findById(Long.parseLong(request.getCourseId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
-        Enrollment enrollment = enrollmentRepository.findByUserAndCourse(user, course)
-                .orElseGet(() -> enrollmentRepository.save(Enrollment.builder()
-                        .user(user)
-                        .course(course)
-                        .build()));
+                Enrollment enrollment;
+                var existing = enrollmentRepository.findByUserAndCourse(user, course);
+                if (existing.isPresent()) {
+                        enrollment = existing.get();
+                        if (!enrollment.isActive()) {
+                                enrollment.setActive(true);
+                                enrollment = enrollmentRepository.save(enrollment);
+                        }
+                } else {
+                        enrollment = Enrollment.builder()
+                                        .user(user)
+                                        .course(course)
+                                        .active(true)
+                                        .build();
+                        enrollment = enrollmentRepository.save(enrollment);
+                }
 
         Long firstContentId = contentRepository.findByCourse(course).stream()
                 .min((a, b) -> Integer.compare(a.getOrderIndex(), b.getOrderIndex()))
                 .map(CourseContent::getId)
                 .orElse(null);
 
+        String message = (existing.isEmpty()) || (existing.isPresent() && !existing.get().isActive()) ? "Enrollment saved successfully" : "Enrollment already exists";
+
         return EnrollmentResponse.builder()
-                .message(enrollment.getId() == null ? "Enrollment saved successfully" : "Enrollment already exists")
+                .message(message)
                 .courseId(course.getId())
                 .userId(user.getId())
                 .firstContentId(firstContentId)

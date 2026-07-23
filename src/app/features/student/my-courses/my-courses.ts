@@ -1,17 +1,20 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MyCoursesService, MyCourseEnrollment } from '../../../core/services/my-courses';
 import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
 
 @Component({
   selector: 'app-my-courses',
-  imports: [CommonModule, RouterLink, CourseLogo, DatePipe],
+  standalone: true,
+  imports: [CommonModule, RouterLink, CourseLogo],
   templateUrl: './my-courses.html',
-  styleUrl: './my-courses.scss',
+  styleUrls: ['./my-courses.scss'],
 })
 export class MyCourses implements OnInit, OnDestroy {
   private myCoursesService = inject(MyCoursesService);
+  private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
 
   courses: MyCourseEnrollment[] = [];
   featuredCourse?: MyCourseEnrollment;
@@ -33,6 +36,11 @@ export class MyCourses implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCourses();
+
+    this.route.queryParamMap.subscribe(() => {
+      this.loadCourses();
+    });
+
     window.addEventListener('storage', this.handleStorageSync);
     window.addEventListener('enrollment:changed', this.handleEnrollmentChanged);
   }
@@ -44,11 +52,26 @@ export class MyCourses implements OnInit, OnDestroy {
 
   private loadCourses(): void {
     this.myCoursesService.getMyCourses().subscribe((courses) => {
-      this.courses = courses;
-      this.featuredCourse = this.courses.find((course) => (course.progressPercentage || 0) < 80) ?? this.courses[0];
-      this.totalProgress = Math.round(this.courses.reduce((sum, course) => sum + (course.progressPercentage || 0), 0) / Math.max(this.courses.length, 1));
-      this.completedCount = this.courses.filter((course) => (course.progressPercentage || 0) >= 80).length;
+      console.log('MyCourses.loadCourses raw response', courses);
+      const activeCourses = (courses || []).filter((c) => c.active !== false);
+      console.log('MyCourses.loadCourses after active filter', activeCourses);
+
+      this.courses = activeCourses;
+      this.featuredCourse =
+        this.courses.find((course) => (course.progressPercentage || 0) < 80) ??
+        this.courses[0];
+
+      this.totalProgress = Math.round(
+        this.courses.reduce((sum, course) => sum + (course.progressPercentage || 0), 0) /
+          Math.max(this.courses.length, 1)
+      );
+
+      this.completedCount = this.courses.filter(
+        (course) => (course.progressPercentage || 0) >= 80
+      ).length;
+
       this.upcomingLessons = this.courses.length > 0 ? Math.max(3, this.courses.length) : 0;
+      this.cdr.detectChanges();
     });
   }
 

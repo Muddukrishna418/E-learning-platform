@@ -6,6 +6,7 @@ import { CourseContentService, CourseContentItem } from '../../../core/services/
 import { EnrollmentService } from '../../../core/services/enrollment';
 import { PaymentService } from '../../../core/services/payment';
 import { CourseLogo } from '../../../shared/components/course-logo/course-logo';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-course-details',
@@ -74,26 +75,30 @@ export class CourseDetails implements OnInit {
     this.enrollmentMessageType = 'info';
     this.enrolling = true;
 
-    this.paymentService.purchaseCourse(this.course.id, `card:${this.course.id}`, 'card').subscribe((result) => {
-      this.enrolling = false;
+    this.paymentService.purchaseCourse(this.course.id, `card:${this.course.id}`, 'card')
+      .pipe(
+        switchMap(() => this.enrollmentService.enroll(this.course!.id))
+      )
+      .subscribe({
+        next: (result) => {
+          this.enrolling = false;
+          this.enrollmentMessage = result.success ? 'Payment Successful and enrollment saved.' : (result.message || 'Enrollment could not be completed at the moment.');
+          this.enrollmentMessageType = result.success ? 'success' : 'error';
 
-      if (result.payuFormData) {
-        this.enrollmentMessage = 'Redirecting you to PayU to complete the payment.';
-        this.enrollmentMessageType = 'info';
-        this.paymentService.redirectToPayu(result.payuFormData);
-        return;
-      }
-
-      this.enrollmentMessage = result.enrolled ? 'Payment Successful' : (result.message || 'Payment could not be completed at the moment.');
-      this.enrollmentMessageType = result.enrolled ? 'success' : 'error';
-
-      if (result.enrolled) {
-        this.isEnrolled = true;
-        this.accessMessage = 'Your course enrollment is active. Your learning materials are ready.';
-        this.notifyEnrollmentChanged();
-        this.router.navigate(['/my-courses']);
-      }
-    });
+          if (result.success) {
+            this.isEnrolled = true;
+            this.accessMessage = 'Your course enrollment is active. Your learning materials are ready.';
+            this.notifyEnrollmentChanged();
+            this.router.navigate(['/my-courses']);
+          }
+        },
+        error: (error) => {
+          this.enrolling = false;
+          const fallbackMessage = error?.error?.message || error?.message || 'The payment or enrollment request could not be completed. Please try again.';
+          this.enrollmentMessage = fallbackMessage;
+          this.enrollmentMessageType = 'error';
+        }
+      });
   }
 
   private loadRelatedCourses(category?: string): void {

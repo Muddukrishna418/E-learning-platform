@@ -20,4 +20,5 @@ public class MyCourseEnrollmentResponse {
     private String category;
     private Integer progressPercentage;
     private LocalDateTime enrollmentDate;
+    private Boolean active;
 }

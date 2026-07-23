@@ -13,6 +13,7 @@ export interface MyCourseEnrollment {
   category?: string;
   progressPercentage?: number;
   enrollmentDate?: string;
+  active?: boolean;
 }
 
 @Injectable({
@@ -62,6 +63,7 @@ export class MyCoursesService {
       category: course?.category ?? 'Learning path',
       progressPercentage: course?.progressPercentage ?? 0,
       enrollmentDate: course?.enrollmentDate ?? new Date().toISOString(),
+      active: course?.active ?? true,
     };
   }
 }

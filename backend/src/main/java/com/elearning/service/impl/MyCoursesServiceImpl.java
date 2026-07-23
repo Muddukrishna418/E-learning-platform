@@ -44,9 +44,9 @@ public class MyCoursesServiceImpl implements MyCoursesService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return enrollmentRepository.findByUser(user).stream()
-                .map(this::toMyCourseResponse)
-                .toList();
+        return enrollmentRepository.findByUserAndActiveTrue(user).stream()
+            .map(this::toMyCourseResponse)
+            .toList();
     }
 
     private MyCourseEnrollmentResponse toMyCourseResponse(Enrollment enrollment) {
@@ -68,6 +68,7 @@ public class MyCoursesServiceImpl implements MyCoursesService {
                 .category(course.getTitle())
                 .progressPercentage(progressPercentage)
                 .enrollmentDate(enrollment.getEnrolledAt())
+                .active(enrollment.isActive())
                 .build();
     }
 }

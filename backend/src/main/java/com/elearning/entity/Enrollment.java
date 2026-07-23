@@ -32,4 +32,8 @@ public class Enrollment {
     protected void onCreate() {
         enrolledAt = LocalDateTime.now();
     }
+    
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean active = true;
 }
