@@ -70,7 +70,7 @@
     </div>
 
     <div class="focus-actions">
-      <a class="primary-cta" [routerLink]="['/courses', featuredCourse.courseId]">Resume course</a>
+      <a class="primary-cta" [routerLink]="['/courses', featuredCourse.courseId, 'learn']">Resume course</a>
       <a class="ghost-cta" routerLink="/courses">View catalog</a>
     </div>
   </div>
@@ -111,7 +111,7 @@
         </div>
 
         <div class="course-actions">
-          <a class="primary-cta small" [routerLink]="['/courses', course.courseId]">Continue</a>
+          <a class="primary-cta small" [routerLink]="['/courses', course.courseId, 'learn']">Continue</a>
           <a class="ghost-cta small" routerLink="/courses">Review syllabus</a>
         </div>
       </div>

@@ -1,9 +1,9 @@
 <div class="dashboard-layout">
   <app-navbar></app-navbar>
-  
+
   <div class="dashboard-body">
-    <app-sidebar></app-sidebar>
-    <div class="main-content">
+    <app-sidebar *ngIf="showSidebar"></app-sidebar>
+    <div class="main-content" [class.full-width]="!showSidebar">
       <router-outlet></router-outlet>
     </div>
   </div>

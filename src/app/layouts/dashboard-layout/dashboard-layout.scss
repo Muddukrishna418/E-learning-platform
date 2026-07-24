@@ -29,6 +29,11 @@
       overflow-y: auto;
       background: #ffffff;
       display: block;
+
+      &.full-width {
+        flex: 1 1 100%;
+        width: 100%;
+      }
     }
   }
 }

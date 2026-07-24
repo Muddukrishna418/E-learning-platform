@@ -31,13 +31,15 @@ export class MyCoursesService {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    return this.http.get<MyCourseEnrollment[]>(`${environment.apiUrl}/v1/enrollments/my-courses`, { headers }).pipe(
-      map((courses) => (Array.isArray(courses) ? courses.map((course) => this.normalizeCourse(course)) : [])),
-      catchError((error) => {
-        console.error('Failed to load my courses from the backend:', error);
-        return of([]);
-      })
-    );
+    return this.http
+      .get<MyCourseEnrollment[] | { value?: MyCourseEnrollment[] }>(`${environment.apiUrl}/v1/enrollments/my-courses`, { headers })
+      .pipe(
+        map((response) => this.normalizeCourseList(response)),
+        catchError((error) => {
+          console.error('Failed to load my courses from the backend:', error);
+          return of([]);
+        })
+      );
   }
 
   private getStoredToken(): string | null {
@@ -51,6 +53,16 @@ export class MyCoursesService {
     }
 
     return rawToken.startsWith('Bearer ') ? rawToken.slice(7).trim() : rawToken;
+  }
+
+  private normalizeCourseList(response: MyCourseEnrollment[] | { value?: MyCourseEnrollment[] } | null | undefined): MyCourseEnrollment[] {
+    const normalized = Array.isArray(response)
+      ? response
+      : Array.isArray(response?.value)
+        ? response.value
+        : [];
+
+    return normalized.map((course) => this.normalizeCourse(course));
   }
 
   private normalizeCourse(course: Partial<MyCourseEnrollment> | null | undefined): MyCourseEnrollment {

@@ -25,6 +25,9 @@ public class CourseContent {
     @Column(nullable = false)
     private String type;
 
+    @Column(name = "video_id", length = 32)
+    private String videoId;
+
     @Column(nullable = false)
     private String url;
 

@@ -91,6 +91,7 @@ public class EnrollmentContentServiceImpl implements EnrollmentContentService {
                 .id(content.getId())
                 .title(content.getTitle())
                 .type(content.getType())
+                .videoId(content.getVideoId())
                 .url(content.getUrl())
                 .description(content.getDescription())
                 .summary(content.getSummary())

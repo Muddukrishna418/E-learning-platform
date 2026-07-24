@@ -25,6 +25,7 @@ export class EnrollmentService {
     return this.http.post<{ message?: string; courseId?: string; firstContentId?: number }>(`${environment.apiUrl}/v1/enrollments`, { courseId }, { headers })
       .pipe(
         map((response) => {
+          this.persistEnrollment(courseId);
           this.notifyEnrollmentChanged(courseId);
 
           return {
@@ -47,6 +48,33 @@ export class EnrollmentService {
   }
 
   getEnrolledCourseIds(): string[] {
-    return [];
+    if (typeof localStorage === 'undefined') {
+      return [];
+    }
+
+    const raw = localStorage.getItem('enrolledCourseIds');
+    if (!raw) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.map((courseId) => String(courseId)) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private persistEnrollment(courseId: string): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    const current = this.getEnrolledCourseIds();
+    if (current.includes(courseId)) {
+      return;
+    }
+
+    localStorage.setItem('enrolledCourseIds', JSON.stringify([...current, courseId]));
   }
 }

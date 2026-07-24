@@ -13,6 +13,7 @@ public class CourseContentResponse {
     private Long id;
     private String title;
     private String type;
+    private String videoId;
     private String url;
     private String description;
     private String summary;

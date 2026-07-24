@@ -56,4 +56,10 @@ describe('EnrollmentService', () => {
 
     expect(localStorage.getItem('enrollments:guest')).toBeNull();
   });
+
+  it('should return persisted enrolled course ids for access checks', () => {
+    localStorage.setItem('enrolledCourseIds', JSON.stringify(['1', '3']));
+
+    expect(service.getEnrolledCourseIds()).toEqual(['1', '3']);
+  });
 });

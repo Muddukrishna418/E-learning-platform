@@ -12,6 +12,7 @@ import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { EnrollPageComponent } from './features/student/enroll/enroll';
 import { LearningMaterialComponent } from './features/student/learning-material/learning-material';
+import { LearningPageComponent } from './features/student/learning-page/learning-page';
 import { MyCourses as MyCoursesComponent } from './features/student/my-courses/my-courses';
 
 export const routes: Routes = [
@@ -61,25 +62,34 @@ export const routes: Routes = [
     ]
   },
 
-  // Courses page with navbar and sidebar
   {
     path: 'courses',
-    component: DashboardLayout,
     children: [
       {
         path: '',
-        component: CoursesComponent
-      }
-    ]
-  },
-
-  {
-    path: 'courses/:id',
-    component: DashboardLayout,
-    children: [
+        component: DashboardLayout,
+        children: [
+          {
+            path: '',
+            component: CoursesComponent,
+            pathMatch: 'full'
+          }
+        ]
+      },
       {
-        path: '',
-        component: StudentCourseDetailsComponent
+        path: ':courseId',
+        component: DashboardLayout,
+        children: [
+          {
+            path: '',
+            component: StudentCourseDetailsComponent,
+            pathMatch: 'full'
+          },
+          {
+            path: 'learn',
+            component: LearningPageComponent
+          }
+        ]
       }
     ]
   },

@@ -1,0 +1,78 @@
+<section class="learning-page">
+  <div class="learning-page-header">
+    <div>
+      <p class="eyebrow">Continue learning</p>
+      <h1>{{ courseTitle }}</h1>
+    </div>
+    <a class="ghost-cta" routerLink="/my-courses">Back to My Courses</a>
+  </div>
+
+  <div *ngIf="error" class="state-card error">{{ error }}</div>
+
+  <div *ngIf="!accessDenied && selectedLesson" class="learning-grid">
+    <aside class="lesson-sidebar">
+      <h2>Lessons</h2>
+      <button
+        type="button"
+        *ngFor="let lesson of lessons"
+        class="lesson-btn"
+        [class.active]="selectedLesson?.id === lesson.id"
+        (click)="selectLesson(lesson)"
+      >
+        <span class="lesson-order">{{ lesson.orderIndex || 1 }}</span>
+        <span class="lesson-title">{{ lesson.title }}</span>
+      </button>
+    </aside>
+
+    <main class="lesson-player">
+      <div class="video-shell" *ngIf="safeEmbedUrl; else directVideo">
+        <iframe
+          [src]="safeEmbedUrl"
+          title="Lesson video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <ng-template #directVideo>
+        <div class="video-shell" *ngIf="selectedLesson?.type === 'VIDEO'">
+          <video controls [src]="selectedLesson?.url" class="media"></video>
+        </div>
+        <div class="video-shell fallback" *ngIf="selectedLesson?.type !== 'VIDEO'">
+          <div class="fallback-message">Video URL not available for this lesson.</div>
+        </div>
+      </ng-template>
+
+      <div class="lesson-content">
+        <div class="lesson-meta">
+          <span class="tag">{{ selectedLesson.type }}</span>
+          <span class="tag subtle">{{ selectedLesson.estimatedDuration || '10 min' }}</span>
+        </div>
+
+        <h2>{{ selectedLesson.title }}</h2>
+        <p>{{ selectedLesson.summary || selectedLesson.description }}</p>
+
+        <div class="lesson-actions">
+          <button type="button" class="primary-cta" (click)="markCompleted(selectedLesson)">
+            {{ selectedLesson.completed ? 'Completed ✓' : 'Mark as completed' }}
+          </button>
+        </div>
+
+        <div class="details-grid">
+          <section class="detail-card">
+            <h3>Lesson overview</h3>
+            <p>{{ selectedLesson.contentBody || selectedLesson.description }}</p>
+          </section>
+          <section class="detail-card" *ngIf="selectedLesson.learningObjectives">
+            <h3>What you’ll learn</h3>
+            <ul>
+              <li *ngFor="let point of selectedLesson.learningObjectives.split('\n')">
+                {{ point.trim() }}
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
